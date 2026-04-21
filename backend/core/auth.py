@@ -11,7 +11,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 import requests
 
-from ..core.database import get_db
+from .database import get_db
 from ..models.user import User, SubscriptionTier, SubscriptionStatus
 
 logger = logging.getLogger(__name__)

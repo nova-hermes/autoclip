@@ -6,9 +6,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
-from ..core.database import get_db
-from ..core.auth import get_current_user
-from ..models.user import User, SubscriptionTier, SubscriptionStatus
+from ...core.database import get_db
+from ...core.auth import get_current_user
+from ...models.user import User, SubscriptionTier, SubscriptionStatus
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/billing", tags=["billing"])
