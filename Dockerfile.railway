@@ -41,6 +41,10 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 # Create data dirs
 RUN mkdir -p data/projects data/uploads data/temp data/output logs
 
-EXPOSE ${PORT:-8000}
+# Startup script
+COPY start.sh ./
+RUN chmod +x start.sh
 
-CMD sh -c "python -m uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+EXPOSE 8000
+
+CMD ["./start.sh"]
