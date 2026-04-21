@@ -43,7 +43,7 @@ class SubtitleEditorApi {
     const response = await fetch(`${this.baseUrl}/${projectId}/clips/${clipId}/subtitles`)
     
     if (!response.ok) {
-      throw new Error(`获取字幕数据失败: ${response.statusText}`)
+      throw new Error(`Failed to get subtitle data: ${response.statusText}`)
     }
     
     return response.json()
@@ -73,7 +73,7 @@ class SubtitleEditorApi {
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`编辑视频失败: ${errorText}`)
+      throw new Error(`Failed to edit video: ${errorText}`)
     }
 
     return response.json()
@@ -110,7 +110,7 @@ class SubtitleEditorApi {
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`创建预览失败: ${errorText}`)
+      throw new Error(`Failed to create preview: ${errorText}`)
     }
 
     return response.json()
@@ -133,7 +133,7 @@ class SubtitleEditorApi {
       const response = await fetch(url)
       
       if (!response.ok) {
-        throw new Error(`下载失败: ${response.statusText}`)
+        throw new Error(`Download failed: ${response.statusText}`)
       }
 
       const blob = await response.blob()
