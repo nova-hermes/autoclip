@@ -21,7 +21,8 @@
     "react-dropzone": "^14.2.3",
     "react-player": "^2.13.0",
     "react-router-dom": "^6.20.1",
-    "zustand": "^4.4.7"
+    "zustand": "^4.4.7",
+    "@clerk/clerk-react": "^5.25.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

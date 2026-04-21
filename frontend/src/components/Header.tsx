@@ -1,7 +1,8 @@
 import React from 'react'
-import { Layout, Button } from 'antd'
-import { SettingOutlined, HomeOutlined } from '@ant-design/icons'
+import { Layout, Button, Dropdown } from 'antd'
+import { SettingOutlined, HomeOutlined, UserOutlined, LogoutOutlined, CreditCardOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useUser, useClerk } from '@clerk/clerk-react'
 
 const { Header: AntHeader } = Layout
 
@@ -9,11 +10,43 @@ const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const isHomePage = location.pathname === '/'
+  const { user, isSignedIn } = useUser()
+  const { signOut } = useClerk()
+
+  const userMenu = {
+    items: [
+      {
+        key: 'email',
+        label: user?.emailAddresses?.[0]?.emailAddress || '',
+        disabled: true,
+      },
+      { type: 'divider' as const },
+      {
+        key: 'billing',
+        icon: <CreditCardOutlined />,
+        label: 'Billing',
+        onClick: () => navigate('/billing'),
+      },
+      {
+        key: 'settings',
+        icon: <SettingOutlined />,
+        label: 'Settings',
+        onClick: () => navigate('/settings'),
+      },
+      { type: 'divider' as const },
+      {
+        key: 'signout',
+        icon: <LogoutOutlined />,
+        label: 'Sign Out',
+        onClick: () => signOut(),
+      },
+    ],
+  }
 
   return (
-    <AntHeader 
+    <AntHeader
       className="glass-effect"
-      style={{ 
+      style={{
         padding: '0 32px',
         display: 'flex',
         alignItems: 'center',
@@ -28,83 +61,72 @@ const Header: React.FC = () => {
       }}
     >
       {/* Logo */}
-      <div 
-        style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
           cursor: 'pointer',
           transition: 'all 0.2s ease'
         }}
         onClick={() => navigate('/')}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.05)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'scale(1)'
-        }}
       >
         <span
           style={{
             fontSize: '24px',
             fontWeight: '700',
-            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            color: '#00d4ff',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             letterSpacing: '-0.5px',
-            textShadow: '0 0 20px rgba(79, 172, 254, 0.3)',
-            filter: 'drop-shadow(0 2px 4px rgba(79, 172, 254, 0.2))'
           }}
         >
           AutoClip
         </span>
       </div>
-      
-      {/* Navigation Buttons */}
+
+      {/* Navigation */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         {!isHomePage && (
-          <Button 
+          <Button
             type="primary"
             icon={<HomeOutlined />}
             onClick={() => navigate('/')}
             style={{
-              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              background: '#00d4ff',
               border: 'none',
               borderRadius: '8px',
               height: '40px',
               padding: '0 20px',
               fontWeight: 500,
-              boxShadow: '0 2px 8px rgba(79, 172, 254, 0.3)'
             }}
           >
             Back to Home
           </Button>
         )}
-        
-        
-        <Button 
-          type="text" 
-          icon={<SettingOutlined />}
-          onClick={() => navigate('/settings')}
-          style={{
-            color: '#cccccc',
-            border: '1px solid transparent',
-            borderRadius: '8px',
-            height: '40px',
-            padding: '0 16px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#2d2d2d'
-            e.currentTarget.style.borderColor = '#404040'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.borderColor = 'transparent'
-          }}
-        >
-          Settings
-        </Button>
+
+        {isSignedIn ? (
+          <Dropdown menu={userMenu} placement="bottomRight">
+            <Button
+              shape="circle"
+              icon={<UserOutlined />}
+              style={{
+                background: '#333',
+                border: '1px solid #444',
+                color: '#fff',
+              }}
+            />
+          </Dropdown>
+        ) : (
+          <Button
+            onClick={() => navigate('/sign-in')}
+            style={{
+              borderColor: '#00d4ff',
+              color: '#00d4ff',
+              borderRadius: 8,
+            }}
+          >
+            Sign In
+          </Button>
+        )}
       </div>
     </AntHeader>
   )
