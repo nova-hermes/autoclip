@@ -65,7 +65,7 @@ class BilibiliAccountService:
                         return False, None
                         
         except asyncio.TimeoutError:
-            logger.error("验证Cookie超时")
+            logger.error("验证CookieTimeout")
             return False, None
         except Exception as e:
             logger.error(f"验证Cookie失败: {e}")
@@ -130,7 +130,7 @@ class BilibiliAccountService:
             ).first()
             
             if not account:
-                raise ValueError("账号不存在")
+                raise ValueError("Account not found")
             
             # 解密Cookie
             decrypted_cookies = decrypt_data(account.cookies)
@@ -183,14 +183,14 @@ class BilibiliAccountService:
                 health_status = await self.check_account_health(account.id)
                 results.append(health_status)
                 
-                # 避免请求过于频繁
+                # 避免Too many requests
                 await asyncio.sleep(1)
             
             logger.info(f"批量检查完成，共检查 {len(results)} 个账号")
             return results
             
         except Exception as e:
-            logger.error(f"批量检查账号健康状态失败: {e}")
+            logger.error(f"Batch check account health失败: {e}")
             raise
     
     def get_active_accounts(self) -> List[BilibiliAccount]:
@@ -395,7 +395,7 @@ class BilibiliUploadService:
         # 验证账号
         account = self.account_service.get_account(upload_data.account_id)
         if not account:
-            raise ValueError("账号不存在")
+            raise ValueError("Account not found")
         
         # 创建投稿记录
         record = UploadRecord(
@@ -428,7 +428,7 @@ class BilibiliUploadService:
             # 获取账号信息
             account = self.db.query(BilibiliAccount).filter(BilibiliAccount.id == record.account_id).first()
             if not account:
-                logger.error(f"账号不存在: {record.account_id}")
+                logger.error(f"Account not found: {record.account_id}")
                 return False
             
             # 解密Cookie
@@ -537,14 +537,14 @@ class BilibiliUploadService:
                 raise ValueError("投稿记录不存在")
             
             if record.status not in ["pending", "processing"]:
-                raise ValueError("只有待处理或处理中的任务可以取消")
+                raise ValueError("只有待处理或Processing的任务可以取消")
             
-            # 更新状态为已取消
+            # 更新状态为Cancelled
             record.status = "cancelled"
             record.updated_at = datetime.utcnow()
             self.db.commit()
             
-            logger.info(f"投稿任务已取消: {record_id}")
+            logger.info(f"投稿任务Cancelled: {record_id}")
             return True
             
         except Exception as e:
@@ -646,7 +646,7 @@ class BilibiliUploadService:
             # 获取账号信息
             account = self.db.query(BilibiliAccount).filter(BilibiliAccount.id == record.account_id).first()
             if not account:
-                logger.error(f"账号不存在: {record.account_id}")
+                logger.error(f"Account not found: {record.account_id}")
                 return False
             
             # 解密Cookie

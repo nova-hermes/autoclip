@@ -341,7 +341,7 @@ class ProjectConfigManager:
             self.get_llm_config()
         except ValueError as e:
             validation_result["valid"] = False
-            validation_result["errors"].append(f"LLM配置错误: {e}")
+            validation_result["errors"].append(f"LLMConfiguration error: {e}")
         
         # 验证prompt文件
         prompt_files = self.get_prompt_files()
@@ -365,7 +365,7 @@ class ProjectConfigManager:
                 validation_result["errors"].append("min_score_threshold必须在0-1之间")
         except Exception as e:
             validation_result["valid"] = False
-            validation_result["errors"].append(f"处理参数错误: {e}")
+            validation_result["errors"].append(f"处理Invalid parameters: {e}")
         
         if validation_result["errors"]:
             validation_result["valid"] = False

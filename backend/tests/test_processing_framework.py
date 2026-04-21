@@ -288,7 +288,7 @@ class TestProcessingService:
         assert service.task_repo is not None
     
     def test_start_processing_success(self, service, tmp_path):
-        """测试开始处理成功"""
+        """测试Started processing成功"""
         srt_file = tmp_path / "test.srt"
         srt_file.write_text("1\n00:00:01,000 --> 00:00:05,000\n测试字幕")
         
@@ -302,13 +302,13 @@ class TestProcessingService:
             assert "task_id" in result
     
     def test_start_processing_failure(self, service, tmp_path):
-        """测试开始处理失败"""
+        """测试Started processing失败"""
         srt_file = tmp_path / "test.srt"
         srt_file.write_text("1\n00:00:01,000 --> 00:00:05,000\n测试字幕")
         
         with patch('backend.services.processing_service.ProcessingOrchestrator') as mock_orchestrator_class:
             mock_orchestrator = Mock()
-            mock_orchestrator.execute_pipeline.side_effect = ServiceError("处理失败")
+            mock_orchestrator.execute_pipeline.side_effect = ServiceError("Processing failed")
             mock_orchestrator_class.return_value = mock_orchestrator
             
             with pytest.raises(ServiceError):
@@ -443,7 +443,7 @@ class TestErrorScenarios:
     """错误场景测试"""
     
     def test_configuration_error(self):
-        """测试配置错误"""
+        """测试Configuration error"""
         error = ConfigurationError("配置无效", details={"field": "api_key"})
         assert error.error_code.value == "CONFIG_INVALID"
         assert "api_key" in error.details["field"]
@@ -524,9 +524,9 @@ def test_integration_basic_flow(test_data_dir, sample_srt_file):
 
 def test_error_handling_scenarios():
     """测试错误处理场景"""
-    # 测试配置错误
+    # 测试Configuration error
     with pytest.raises(ConfigurationError):
-        raise ConfigurationError("配置错误")
+        raise ConfigurationError("Configuration error")
     
     # 测试文件操作错误
     with pytest.raises(FileOperationError):
@@ -534,7 +534,7 @@ def test_error_handling_scenarios():
     
     # 测试处理错误
     with pytest.raises(ProcessingError):
-        raise ProcessingError("处理失败", step_name="step1")
+        raise ProcessingError("Processing failed", step_name="step1")
 
 
 if __name__ == "__main__":

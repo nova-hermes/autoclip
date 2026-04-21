@@ -44,7 +44,7 @@ def _auto_install_bcut_asr():
         # 运行安装脚本
         result = subprocess.run([
             sys.executable, str(script_path)
-        ], capture_output=True, text=True, timeout=600)  # 10分钟超时
+        ], capture_output=True, text=True, timeout=600)  # 10分钟Timeout
         
         if result.returncode == 0:
             logger.info("✅ bcut-asr自动安装成功")
@@ -55,7 +55,7 @@ def _auto_install_bcut_asr():
             return False
             
     except subprocess.TimeoutExpired:
-        logger.error("❌ bcut-asr安装超时")
+        logger.error("❌ bcut-asr安装Timeout")
         _show_manual_install_guide()
         return False
     except Exception as e:
@@ -148,7 +148,7 @@ class SpeechRecognitionConfig:
     method: SpeechRecognitionMethod = SpeechRecognitionMethod.BCUT_ASR
     language: LanguageCode = LanguageCode.AUTO
     model: str = "base"  # Whisper模型大小
-    timeout: int = 0  # 超时时间（秒），0表示无限制
+    timeout: int = 0  # Timeout时间（秒），0表示无限制
     output_format: str = "srt"  # 输出格式
     enable_timestamps: bool = True  # 是否启用时间戳
     enable_punctuation: bool = True  # 是否启用标点符号
@@ -177,9 +177,9 @@ class SpeechRecognitionConfig:
         if self.model not in valid_models:
             raise ValueError(f"不支持的Whisper模型: {self.model}")
         
-        # 验证超时时间
+        # 验证Timeout时间
         if self.timeout < 0:
-            raise ValueError("超时时间不能为负数")
+            raise ValueError("Timeout时间不能为负数")
         
         # 验证输出格式
         valid_formats = ["srt", "vtt", "txt", "json"]
@@ -328,7 +328,7 @@ class SpeechRecognizer:
             return audio_path
             
         except subprocess.TimeoutExpired:
-            raise SpeechRecognitionError("音频提取超时")
+            raise SpeechRecognitionError("音频提取Timeout")
         except Exception as e:
             raise SpeechRecognitionError(f"音频提取失败: {e}")
     
@@ -349,7 +349,7 @@ class SpeechRecognizer:
             SpeechRecognitionError: 语音识别失败
         """
         if not video_path.exists():
-            raise SpeechRecognitionError(f"视频文件不存在: {video_path}")
+            raise SpeechRecognitionError(f"Video file not found: {video_path}")
         
         # 使用传入的配置或默认配置
         config = config or self.config
@@ -420,7 +420,7 @@ class SpeechRecognizer:
             
             # 检查视频文件是否存在
             if not video_path.exists():
-                raise SpeechRecognitionError(f"视频文件不存在: {video_path}")
+                raise SpeechRecognitionError(f"Video file not found: {video_path}")
             
             # 检查视频文件大小
             file_size = video_path.stat().st_size
@@ -462,7 +462,7 @@ class SpeechRecognizer:
                 attempt += 1
                 logger.info(f"等待识别结果... ({attempt}/{max_attempts})")
             else:
-                raise SpeechRecognitionError("bcut-asr识别超时")
+                raise SpeechRecognitionError("bcut-asr识别Timeout")
             
             # 解析字幕内容
             subtitle = result.parse()
@@ -518,7 +518,7 @@ class SpeechRecognizer:
             
             # 检查视频文件是否存在
             if not video_path.exists():
-                raise SpeechRecognitionError(f"视频文件不存在: {video_path}")
+                raise SpeechRecognitionError(f"Video file not found: {video_path}")
             
             # 检查视频文件大小
             file_size = video_path.stat().st_size
@@ -538,10 +538,10 @@ class SpeechRecognizer:
             if config.language != LanguageCode.AUTO:
                 cmd.extend(['--language', config.language])
             
-            # 添加超时处理
+            # 添加Timeout处理
             logger.info(f"执行Whisper命令: {' '.join(cmd)}")
             
-            # 根据超时配置决定是否设置超时
+            # 根据Timeout配置决定是否设置Timeout
             if config.timeout > 0:
                 result = subprocess.run(
                     cmd, 
@@ -551,7 +551,7 @@ class SpeechRecognizer:
                     cwd=str(video_path.parent)  # 设置工作目录
                 )
             else:
-                # 无超时限制
+                # 无Timeout限制
                 result = subprocess.run(
                     cmd, 
                     capture_output=True, 
@@ -586,16 +586,16 @@ class SpeechRecognizer:
                 elif "ffmpeg" in result.stderr.lower():
                     error_msg += "\n\n解决方案: 请安装ffmpeg:\n  macOS: brew install ffmpeg\n  Ubuntu: sudo apt install ffmpeg"
                 elif "timeout" in result.stderr.lower():
-                    error_msg += f"\n\n解决方案: 视频处理超时，请尝试使用更小的模型 (--model tiny) 或增加超时时间"
+                    error_msg += f"\n\n解决方案: 视频处理Timeout，请尝试使用更小的模型 (--model tiny) 或增加Timeout时间"
                 
                 logger.error(error_msg)
                 raise SpeechRecognitionError(error_msg)
                 
         except subprocess.TimeoutExpired:
-            error_msg = f"本地Whisper执行超时（{config.timeout}秒）\n"
+            error_msg = f"本地Whisper执行Timeout（{config.timeout}秒）\n"
             error_msg += "解决方案:\n"
             error_msg += "1. 使用更小的模型: --model tiny\n"
-            error_msg += "2. 增加超时时间\n"
+            error_msg += "2. 增加Timeout时间\n"
             error_msg += "3. 检查视频文件是否损坏"
             logger.error(error_msg)
             raise SpeechRecognitionError(error_msg)

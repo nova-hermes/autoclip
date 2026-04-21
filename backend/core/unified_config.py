@@ -26,7 +26,7 @@ class RedisConfig(BaseModel):
     """Redis配置"""
     url: str = Field(default="redis://localhost:6379/0", description="Redis连接URL")
     max_connections: int = Field(default=10, description="最大连接数")
-    socket_timeout: int = Field(default=5, description="Socket超时时间")
+    socket_timeout: int = Field(default=5, description="SocketTimeout时间")
 
 
 class APIConfig(BaseModel):
@@ -34,7 +34,7 @@ class APIConfig(BaseModel):
     dashscope_api_key: str = Field(default="", description="DashScope API密钥")
     model_name: str = Field(default="qwen-plus", description="模型名称")
     max_tokens: int = Field(default=4096, description="最大token数")
-    timeout: int = Field(default=30, description="API超时时间")
+    timeout: int = Field(default=30, description="APITimeout时间")
     max_retries: int = Field(default=3, description="最大重试次数")
     
     @validator('max_tokens')
@@ -56,7 +56,7 @@ class ProcessingConfig(BaseModel):
     min_score_threshold: float = Field(default=0.7, description="最小评分阈值")
     max_clips_per_collection: int = Field(default=5, description="每个合集最大切片数")
     max_retries: int = Field(default=3, description="最大重试次数")
-    timeout_seconds: int = Field(default=30, description="处理超时时间")
+    timeout_seconds: int = Field(default=30, description="处理Timeout时间")
     
     # 话题提取控制参数
     min_topic_duration_minutes: int = Field(default=2, description="最小话题时长(分钟)")
@@ -83,7 +83,7 @@ class SpeechRecognitionConfig(BaseModel):
     method: str = Field(default="whisper_local", description="识别方法")
     language: str = Field(default="auto", description="识别语言")
     model: str = Field(default="base", description="模型大小")
-    timeout: int = Field(default=1000, description="识别超时时间")
+    timeout: int = Field(default=1000, description="识别Timeout时间")
 
 
 class BilibiliConfig(BaseModel):
@@ -91,7 +91,7 @@ class BilibiliConfig(BaseModel):
     auto_upload: bool = Field(default=False, description="是否自动上传")
     default_tid: int = Field(default=21, description="默认分区ID")
     max_concurrent_uploads: int = Field(default=3, description="最大并发上传数")
-    upload_timeout_minutes: int = Field(default=30, description="上传超时时间(分钟)")
+    upload_timeout_minutes: int = Field(default=30, description="上传Timeout时间(分钟)")
     auto_generate_tags: bool = Field(default=True, description="是否自动生成标签")
     tag_limit: int = Field(default=12, description="标签数量限制")
 

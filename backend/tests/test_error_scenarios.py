@@ -23,7 +23,7 @@ from backend.services.pipeline_adapter import PipelineAdapter
 
 
 class TestConfigurationErrorScenarios:
-    """配置错误场景测试"""
+    """Configuration error场景测试"""
     
     def test_missing_api_key(self, tmp_path):
         """测试缺少API密钥"""
@@ -132,13 +132,13 @@ class TestProcessingErrorScenarios:
             adapter.adapt_step("step1_outline", srt_path=Path("nonexistent.srt"))
     
     def test_timeout_error(self, tmp_path):
-        """测试超时错误"""
+        """测试Timeout错误"""
         project_dir = tmp_path / "test_project"
         project_dir.mkdir()
         
         adapter = PipelineAdapter(str(project_dir))
         
-        # 测试超时错误（文件不存在）
+        # 测试Timeout错误（文件不存在）
         with pytest.raises(FileNotFoundError):
             adapter.adapt_step("step1_outline", srt_path=Path("nonexistent.srt"))
     
@@ -177,7 +177,7 @@ class TestConcurrencyErrorScenarios:
         concurrency_manager.release_lock(resource_id, task_id_1)
     
     def test_lock_timeout(self, tmp_path):
-        """测试锁超时"""
+        """测试锁Timeout"""
         from services.concurrency_manager import concurrency_manager
         
         resource_id = "test_resource"

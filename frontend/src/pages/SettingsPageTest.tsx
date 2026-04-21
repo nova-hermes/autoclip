@@ -19,7 +19,7 @@ const SettingsPageTest: React.FC = () => {
         <Card title="API 配置" className="settings-card">
           <Alert
             message="配置说明"
-            description="请配置通义千问API密钥以启用AI自动切片功能。您可以在阿里云控制台获取API密钥。"
+            description="请配置DashScopeAPIAPI Key以启用AI自动Clip功能。您可以在阿里云控制台获取APIAPI Key。"
             type="info"
             showIcon
             className="settings-alert"
@@ -41,12 +41,12 @@ const SettingsPageTest: React.FC = () => {
               name="dashscope_api_key"
               className="form-item"
               rules={[
-                { required: true, message: '请输入API密钥' },
-                { min: 10, message: 'API密钥长度不能少于10位' }
+                { required: true, message: 'Please enterAPIAPI Key' },
+                { min: 10, message: 'APIAPI Key长度不能少于10位' }
               ]}
             >
               <Input.Password
-                placeholder="请输入通义千问API密钥"
+                placeholder="Please enterDashScopeAPIAPI Key"
                 prefix={<KeyOutlined />}
                 className="settings-input"
               />
@@ -64,12 +64,12 @@ const SettingsPageTest: React.FC = () => {
 
             <Divider className="settings-divider" />
 
-            <Title level={4} className="section-title">模型配置</Title>
+            <Title level={4} className="section-title">Model配置</Title>
             
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="模型名称"
+                  label="ModelName"
                   name="model_name"
                   className="form-item"
                 >
@@ -78,7 +78,7 @@ const SettingsPageTest: React.FC = () => {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="文本分块大小"
+                  label="文本分块Size"
                   name="chunk_size"
                   className="form-item"
                 >
@@ -95,7 +95,7 @@ const SettingsPageTest: React.FC = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="最低评分阈值"
+                  label="最低Score阈值"
                   name="min_score_threshold"
                   className="form-item"
                 >
@@ -111,7 +111,7 @@ const SettingsPageTest: React.FC = () => {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="每个合集最大切片数"
+                  label="每个Collection最大Clip数"
                   name="max_clips_per_collection"
                   className="form-item"
                 >
@@ -133,7 +133,7 @@ const SettingsPageTest: React.FC = () => {
                 size="large"
                 className="save-button"
               >
-                保存配置
+                Save配置
               </Button>
             </Form.Item>
           </Form>
@@ -143,10 +143,10 @@ const SettingsPageTest: React.FC = () => {
           <Space direction="vertical" size="large" className="instructions-space">
             <div className="instruction-item">
               <Title level={5} className="instruction-title">
-                <InfoCircleOutlined /> 1. 获取API密钥
+                <InfoCircleOutlined /> 1. 获取APIAPI Key
               </Title>
               <Paragraph className="instruction-text">
-                访问阿里云控制台 → 人工智能 → 通义千问 → API密钥管理，创建新的API密钥
+                访问阿里云控制台 → 人工智能 → DashScope → APIAPI Key管理，创建新的APIAPI Key
               </Paragraph>
             </div>
             
@@ -155,9 +155,9 @@ const SettingsPageTest: React.FC = () => {
                 <InfoCircleOutlined /> 2. 配置参数说明
               </Title>
               <Paragraph className="instruction-text">
-                • <Text strong>文本分块大小</Text>：影响处理速度和精度，建议5000字符<br />
-                • <Text strong>评分阈值</Text>：只有高于此分数的片段才会被保留<br />
-                • <Text strong>合集切片数</Text>：控制每个主题合集包含的片段数量
+                • <Text strong>文本分块Size</Text>：影响处理速度和精度，建议5000字符<br />
+                • <Text strong>Score阈值</Text>：只有高于此分数的Clip才会被保留<br />
+                • <Text strong>CollectionClip数</Text>：控制每个TopicCollection包含的ClipCount
               </Paragraph>
             </div>
             
@@ -166,7 +166,7 @@ const SettingsPageTest: React.FC = () => {
                 <InfoCircleOutlined /> 3. 测试连接
               </Title>
               <Paragraph className="instruction-text">
-                保存前建议先测试API密钥是否有效，确保服务正常运行
+                Save前建议先测试APIAPI Key是否有效，确保服务正常运行
               </Paragraph>
             </div>
           </Space>

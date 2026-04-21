@@ -32,13 +32,13 @@ export const TaskProgressDisplay: React.FC<TaskProgressDisplayProps> = ({
       console.log('任务进度更新:', state);
     },
     onTaskComplete: (state) => {
-      console.log('任务完成:', state);
-      message.success('任务处理完成！');
+      console.log('任务Complete:', state);
+      message.success('任务Processing Complete！');
       onTaskComplete?.(state);
     },
     onTaskFailed: (state) => {
-      console.log('任务失败:', state);
-      message.error(`任务处理失败: ${state.message}`);
+      console.log('任务Failed:', state);
+      message.error(`任务Processing Failed: ${state.message}`);
       onTaskFailed?.(state);
     }
   });
@@ -57,10 +57,10 @@ export const TaskProgressDisplay: React.FC<TaskProgressDisplayProps> = ({
   const getPhaseText = (phase: string) => {
     switch (phase) {
       case 'transcribe': return '语音识别';
-      case 'analyze': return '内容分析';
-      case 'clip': return '视频切片';
+      case 'analyze': return 'Content Analysis';
+      case 'clip': return '视频Clip';
       case 'encode': return '视频编码';
-      case 'upload': return '上传处理';
+      case 'upload': return 'Upload处理';
       default: return phase;
     }
   };
@@ -77,10 +77,10 @@ export const TaskProgressDisplay: React.FC<TaskProgressDisplayProps> = ({
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'PENDING': return '等待中';
-      case 'PROGRESS': return '进行中';
-      case 'DONE': return '已完成';
-      case 'FAIL': return '失败';
+      case 'PENDING': return 'Waiting';
+      case 'PROGRESS': return 'In Progress';
+      case 'DONE': return 'Completed';
+      case 'FAIL': return 'Failed';
       default: return status;
     }
   };
@@ -181,7 +181,7 @@ export const TaskProgressDisplay: React.FC<TaskProgressDisplayProps> = ({
                 </div>
               )}
               <div>
-                <Text strong>连接状态:</Text> 
+                <Text strong>连接Status:</Text> 
                 <Tag color={isConnected ? 'success' : 'error'} style={{ marginLeft: 8 }}>
                   {isConnected ? '已连接' : '未连接'}
                 </Tag>

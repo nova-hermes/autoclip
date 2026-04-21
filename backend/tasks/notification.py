@@ -157,7 +157,7 @@ def send_completion_notification(self, project_id: str, task_id: str, result: Di
                 'project_id': project_id,
                 'task_id': task_id,
                 'type': 'success',
-                'message': '处理完成',
+                'message': 'Processing complete',
                 'result': result,
                 'timestamp': datetime.utcnow().isoformat()
             }

@@ -184,7 +184,7 @@ class ProgressEventService:
                             except Exception as e:
                                 logger.error(f"处理进度事件失败: {e}")
                 except Exception as e:
-                    logger.error(f"订阅消息处理失败: {e}")
+                    logger.error(f"订阅消息Processing failed: {e}")
                 finally:
                     await pubsub.unsubscribe(channel)
                     await pubsub.close()

@@ -35,7 +35,7 @@ class OptimizedStorageService:
         """确保项目目录结构存在"""
         directories = [
             self.project_dir / "raw",           # 原始文件
-            self.project_dir / "processing",    # 处理中间文件
+            self.project_dir / "processing",    # Processing间文件
             self.project_dir / "output" / "clips",      # 切片文件
             self.project_dir / "output" / "collections" # 合集文件
         ]
@@ -181,10 +181,10 @@ class OptimizedStorageService:
             self.db.rollback()
             raise
     
-    # ==================== 处理中间文件管理 ====================
+    # ==================== Processing间文件管理 ====================
     
     def save_processing_metadata(self, metadata: Dict[str, Any], step: str) -> str:
-        """保存处理中间元数据到文件系统"""
+        """保存Processing间元数据到文件系统"""
         try:
             metadata_file = self.project_dir / "processing" / f"{step}.json"
             
@@ -199,7 +199,7 @@ class OptimizedStorageService:
             raise
     
     def get_processing_metadata(self, step: str) -> Optional[Dict[str, Any]]:
-        """获取处理中间元数据"""
+        """获取Processing间元数据"""
         try:
             metadata_file = self.project_dir / "processing" / f"{step}.json"
             

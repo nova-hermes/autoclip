@@ -28,14 +28,14 @@ def process_import_task(self, project_id: str, video_path: str, srt_file_path: O
         srt_file_path: 字幕文件路径（可选）
     """
     try:
-        logger.info(f"开始处理导入任务: {project_id}")
+        logger.info(f"Started processing导入任务: {project_id}")
         
         # 获取数据库会话
         db = next(get_db())
         project_service = ProjectService(db)
         
         # 更新任务进度
-        self.update_state(state='PROGRESS', meta={'progress': 10, 'message': '开始处理...'})
+        self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Started processing...'})
         
         # 1. 检查并生成缩略图（如果还没有）
         logger.info(f"检查项目 {project_id} 缩略图...")
@@ -96,8 +96,8 @@ def process_import_task(self, project_id: str, video_path: str, srt_file_path: O
                 # 字幕生成失败，使用空字幕文件
                 srt_path = None
         
-        # 3. 更新项目状态为处理中
-        logger.info(f"更新项目 {project_id} 状态为处理中...")
+        # 3. 更新项目状态为Processing
+        logger.info(f"更新项目 {project_id} 状态为Processing...")
         self.update_state(state='PROGRESS', meta={'progress': 80, 'message': '启动处理流程...'})
         
         project_service.update_project_status(project_id, "processing")
@@ -121,21 +121,21 @@ def process_import_task(self, project_id: str, video_path: str, srt_file_path: O
                     return
                     
             except Exception as e:
-                logger.error(f"启动项目 {project_id} 处理失败: {str(e)}")
+                logger.error(f"启动项目 {project_id} Processing failed: {str(e)}")
                 project_service.update_project_status(project_id, "failed")
                 self.update_state(state='FAILURE', meta={'error': str(e)})
                 return
         else:
-            logger.error(f"字幕文件不存在: {srt_path}")
+            logger.error(f"Subtitle file not found: {srt_path}")
             project_service.update_project_status(project_id, "failed")
-            self.update_state(state='FAILURE', meta={'error': '字幕文件不存在'})
+            self.update_state(state='FAILURE', meta={'error': 'Subtitle file not found'})
             return
         
         logger.info(f"导入任务完成: {project_id}")
         return {
             'status': 'completed',
             'project_id': project_id,
-            'message': '导入处理完成'
+            'message': '导入Processing complete'
         }
         
     except Exception as e:

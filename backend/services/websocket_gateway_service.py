@@ -167,7 +167,7 @@ class WebSocketGatewayService:
             if self.channels_ref[channel] <= 0:
                 await self.pubsub.unsubscribe(channel)
                 del self.channels_ref[channel]
-                logger.debug(f"已取消订阅频道: {channel}")
+                logger.debug(f"Cancelled订阅频道: {channel}")
     
     async def _replay_snapshot(self, user_id: str, channel: str):
         """回放快照"""
@@ -281,11 +281,11 @@ class WebSocketGatewayService:
             await manager.send_personal_message({
                 "type": "unsubscription_confirmed",
                 "task_id": task_id,
-                "message": f"已取消订阅任务 {task_id} 的进度更新",
+                "message": f"Cancelled订阅任务 {task_id} 的进度更新",
                 "timestamp": datetime.utcnow().isoformat()
             }, user_id)
             
-            logger.debug(f"用户 {user_id} 已取消订阅任务 {task_id}")
+            logger.debug(f"用户 {user_id} Cancelled订阅任务 {task_id}")
             return True
             
         except Exception as e:
@@ -299,7 +299,7 @@ class WebSocketGatewayService:
             for task_id in task_ids:
                 await self.unsubscribe_user_from_task(user_id, task_id)
             del self.user_subscriptions[user_id]
-            logger.info(f"用户 {user_id} 已取消所有任务订阅")
+            logger.info(f"用户 {user_id} Cancelled所有任务订阅")
 
     async def subscribe_user_to_many_tasks(self, user_id: str, task_ids: list[str]) -> dict:
         """批量订阅多个任务 - 幂等操作"""

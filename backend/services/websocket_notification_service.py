@@ -110,7 +110,7 @@ class WebSocketNotificationService:
                 task_id=task_id,
                 status="running",
                 progress=0,
-                message="开始处理项目"
+                message="Started processing项目"
             )
             
             # 广播给所有连接的用户
@@ -164,13 +164,13 @@ class WebSocketNotificationService:
     
     @staticmethod
     async def send_processing_complete(project_id: str, task_id: str, result: dict):
-        """发送处理完成通知"""
+        """发送Processing complete通知"""
         try:
             notification = WebSocketMessage.create_task_update(
                 task_id=task_id,
                 status="completed",
                 progress=100,
-                message="项目处理完成"
+                message="项目Processing complete"
             )
             
             # 广播给所有连接的用户
@@ -180,10 +180,10 @@ class WebSocketNotificationService:
             topic = f"project_{project_id}"
             await manager.broadcast_to_topic(notification, topic)
             
-            logger.info(f"处理完成通知已发送: {project_id} - {task_id}")
+            logger.info(f"Processing complete通知已发送: {project_id} - {task_id}")
             
         except Exception as e:
-            logger.error(f"发送处理完成通知失败: {e}")
+            logger.error(f"发送Processing complete通知失败: {e}")
     
     @staticmethod
     async def send_processing_error(project_id: str, task_id: str, error_message: str):

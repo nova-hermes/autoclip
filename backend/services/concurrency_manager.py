@@ -40,7 +40,7 @@ class ConcurrencyManager:
         Args:
             resource_id: 资源ID
             task_id: 任务ID
-            timeout_seconds: 超时时间（秒）
+            timeout_seconds: Timeout时间（秒）
             
         Returns:
             是否成功获取锁
@@ -50,9 +50,9 @@ class ConcurrencyManager:
             if resource_id in self._locks:
                 existing_lock = self._locks[resource_id]
                 
-                # 检查锁是否已超时
+                # 检查锁是否已Timeout
                 if datetime.now() - existing_lock.acquired_at > existing_lock.timeout:
-                    logger.warning(f"锁已超时，强制释放: {resource_id}")
+                    logger.warning(f"锁已Timeout，强制释放: {resource_id}")
                     self._release_lock_internal(resource_id)
                 else:
                     # 检查是否为同一任务
@@ -115,7 +115,7 @@ class ConcurrencyManager:
                 return False
             
             lock_info = self._locks[resource_id]
-            # 检查是否超时
+            # 检查是否Timeout
             if datetime.now() - lock_info.acquired_at > lock_info.timeout:
                 self._release_lock_internal(resource_id)
                 return False

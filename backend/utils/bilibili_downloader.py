@@ -186,7 +186,7 @@ class BilibiliDownloader:
             
             # 如果第一次尝试没有找到字幕，尝试不同的字幕获取策略
             if not subtitle_path:
-                logger.info("第一次字幕下载失败，尝试备用策略...")
+                logger.info("第一次Subtitle download failed，尝试备用策略...")
                 subtitle_path = await self._try_alternative_subtitle_strategies(url, safe_title)
             
             if progress_callback:

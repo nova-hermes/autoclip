@@ -94,7 +94,7 @@ def main():
         r.ping()
         print("✅ Redis连接正常")
     except Exception as e:
-        print(f"❌ Redis连接失败: {e}")
+        print(f"❌ RedisConnection failed: {e}")
         print("请确保Redis服务正在运行: redis-server")
         return
     

@@ -40,7 +40,7 @@ async def update_clip_title(
         # 更新切片标题
         clip = clip_service.update_clip(clip_id, ClipUpdate(title=new_title))
         if not clip:
-            raise HTTPException(status_code=404, detail="切片不存在")
+            raise HTTPException(status_code=404, detail="Clip not found")
         
         # 返回更新后的切片信息
         return ClipResponse(
@@ -78,7 +78,7 @@ async def generate_clip_title(
         # 获取切片信息
         clip = clip_service.get(clip_id)
         if not clip:
-            raise HTTPException(status_code=404, detail="切片不存在")
+            raise HTTPException(status_code=404, detail="Clip not found")
         
         # 直接从clip_metadata获取内容，不需要从文件系统获取
         clip_metadata = getattr(clip, 'clip_metadata', {}) or {}
@@ -255,7 +255,7 @@ async def cleanup_duplicate_clips(
         # 获取项目
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取数据库中的所有切片
         db_clips = db.query(Clip).filter(Clip.project_id == project_id).all()
@@ -330,7 +330,7 @@ async def resync_project_clips(
         # 获取项目
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 删除现有的切片数据
         existing_clips = db.query(Clip).filter(Clip.project_id == project_id).all()

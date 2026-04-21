@@ -34,7 +34,7 @@ class ThumbnailGenerator:
         """
         try:
             if not video_path.exists():
-                logger.error(f"视频文件不存在: {video_path}")
+                logger.error(f"Video file not found: {video_path}")
                 return None
             
             # 检查文件格式
@@ -107,7 +107,7 @@ class ThumbnailGenerator:
                 return None
                 
         except subprocess.TimeoutExpired:
-            logger.error(f"缩略图生成超时: {video_path}")
+            logger.error(f"缩略图生成Timeout: {video_path}")
             return None
         except Exception as e:
             logger.error(f"缩略图生成异常: {e}")

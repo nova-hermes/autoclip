@@ -40,12 +40,12 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
   const { updateProject } = useProjectStore()
 
   const steps = [
-    { title: '大纲提取', description: '从视频转写文本中提取结构性大纲' },
-    { title: '时间定位', description: '基于SRT字幕定位话题时间区间' },
-    { title: '内容评分', description: '多维度评估片段质量与传播潜力' },
-    { title: '标题生成', description: '为高分片段生成吸引人的标题' },
-    { title: '主题聚类', description: '将相关片段聚合为合集推荐' },
-    { title: '视频切割', description: '使用FFmpeg生成切片与合集视频' }
+    { title: 'Outline Extraction', description: '从视频转写文本中提取结构性Outline' },
+    { title: 'Timeline Mapping', description: '基于SRTSubtitles定位话题时间区间' },
+    { title: 'Content Scoring', description: '多维度评估Clip质量与传播潜力' },
+    { title: 'Title Generation', description: '为高分Clip生成吸引人的Title' },
+    { title: 'Topic Clustering', description: '将相关Clip聚合为Collection推荐' },
+    { title: 'Video Cutting', description: '使用FFmpeg生成Clip与Collection视频' }
   ]
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
         const statusData = await projectApi.getProcessingStatus(projectId)
         setStatus(statusData)
         
-        // 更新项目状态
+        // 更新ProjectStatus
         updateProject(projectId, {
           status: statusData.status,
           current_step: statusData.current_step,
@@ -67,7 +67,7 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
           error_message: statusData.error_message
         })
         
-        // 如果处理完成，通知父组件
+        // 如果Processing Complete，通知父组件
         if (statusData.status === 'completed') {
           onComplete?.(projectId)
         }
@@ -76,10 +76,10 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
       }
     }
 
-    // 立即检查一次状态
+    // 立即检查一次Status
     checkStatus()
     
-    // 如果任务还在进行中，定期检查状态
+    // 如果任务还在In Progress，定期检查Status
     const interval = setInterval(checkStatus, 2000)
     
     return () => clearInterval(interval)
@@ -91,13 +91,13 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
     setLoading(true)
     try {
       if (status?.current_step !== undefined) {
-        // 从当前步骤重试
+        // 从当前步骤Retry
         await projectApi.restartStep(projectId, status.current_step)
       } else {
-        // 完全重试
+        // 完全Retry
         await projectApi.retryProcessing(projectId)
       }
-      // 重新开始状态检查
+      // 重新StartStatus检查
       setStatus(null)
     } catch (error) {
       console.error('Retry error:', error)
@@ -154,7 +154,7 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
       onCancel={onClose}
       footer={[
         <Button key="close" onClick={onClose}>
-          关闭
+          Close
         </Button>,
         ...(status?.status === 'error' ? [
           <Button 
@@ -164,7 +164,7 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
             loading={loading}
             onClick={handleRetry}
           >
-            从当前步骤重试
+            从当前步骤Retry
           </Button>
         ] : [])
       ]}
@@ -178,7 +178,7 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
             <Spin size="large" />
             <div style={{ marginTop: '16px', color: '#666' }}>
-              正在获取任务状态...
+              正在获取任务Status...
             </div>
           </div>
         ) : (
@@ -224,10 +224,10 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
               />
             </div>
 
-            {/* 错误信息 */}
+            {/* Error信息 */}
             {status.status === 'error' && status.error_message && (
               <Alert
-                message="处理失败"
+                message="Processing Failed"
                 description={status.error_message}
                 type="error"
                 showIcon
@@ -255,11 +255,11 @@ const TaskProgressModal: React.FC<TaskProgressModalProps> = ({
               </Steps>
             </div>
 
-            {/* 完成提示 */}
+            {/* CompleteNotice */}
             {status.status === 'completed' && (
               <Alert
-                message="处理完成"
-                description="视频已成功处理，您可以查看生成的片段和合集。"
+                message="Processing Complete"
+                description="视频已Success处理，您可以查看生成的Clip和Collection。"
                 type="success"
                 showIcon
               />

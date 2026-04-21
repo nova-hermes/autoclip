@@ -69,7 +69,7 @@ class TaskQueueService:
             }
             
         except Exception as e:
-            logger.error(f"提交视频处理任务失败: {project_id}, 错误: {e}")
+            logger.error(f"提交视频Task processing failed: {project_id}, 错误: {e}")
             raise
     
     def submit_single_step_task(self, project_id: str, step_name: str, srt_path: Optional[str] = None) -> Dict[str, Any]:
@@ -266,12 +266,12 @@ class TaskQueueService:
             task.status = TaskStatus.CANCELLED
             self.db.commit()
             
-            logger.info(f"任务已取消: {task_id}")
+            logger.info(f"任务Cancelled: {task_id}")
             return {
                 'success': True,
                 'task_id': task_id,
                 'status': 'CANCELLED',
-                'message': '任务已取消'
+                'message': '任务Cancelled'
             }
             
         except Exception as e:

@@ -34,7 +34,7 @@ async def start_pipeline(
         
         # 检查项目状态
         if project.status == ProjectStatus.PROCESSING:
-            return {"status": "skipped", "message": "项目已在处理中"}
+            return {"status": "skipped", "message": "项目已在Processing"}
         
         if project.status == ProjectStatus.COMPLETED:
             return {"status": "skipped", "message": "项目已完成"}

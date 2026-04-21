@@ -85,7 +85,7 @@ class ConnectionManager:
                 
                 self.send_queues[user_id].task_done()
         except asyncio.CancelledError:
-            logger.debug(f"用户 {user_id} 发送工作器已取消")
+            logger.debug(f"用户 {user_id} 发送工作器Cancelled")
         except Exception as e:
             logger.error(f"用户 {user_id} 发送工作器异常: {e}")
 

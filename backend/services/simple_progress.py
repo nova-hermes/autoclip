@@ -35,7 +35,7 @@ try:
     r.ping()
     logger.info("Redis连接成功")
 except Exception as e:
-    logger.error(f"Redis连接失败: {e}")
+    logger.error(f"RedisConnection failed: {e}")
     r = None
 
 
@@ -186,7 +186,7 @@ STAGE_NAMES = {
     "ANALYZE": "内容分析",
     "HIGHLIGHT": "片段定位",
     "EXPORT": "视频导出",
-    "DONE": "处理完成"
+    "DONE": "Processing complete"
 }
 
 def get_stage_display_name(stage: str) -> str:

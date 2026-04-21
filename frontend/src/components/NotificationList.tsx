@@ -115,7 +115,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
           icon={<DeleteOutlined />}
           onClick={() => onRemove(notification.id)}
         >
-          删除
+          Delete
         </Button>
       ]}
     >

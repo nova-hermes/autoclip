@@ -69,10 +69,10 @@ class PipelineAdapter:
         input_srt = self.project_paths["input_dir"] / "input.srt"
         
         if not input_video.exists():
-            errors.append(f"视频文件不存在: {input_video}")
+            errors.append(f"Video file not found: {input_video}")
         
         if not input_srt.exists():
-            errors.append(f"字幕文件不存在: {input_srt}")
+            errors.append(f"Subtitle file not found: {input_srt}")
         
         # 检查提示词文件
         prompt_files = get_prompt_files()
@@ -94,7 +94,7 @@ class PipelineAdapter:
             处理结果
         """
         try:
-            logger.info(f"开始处理项目 {self.project_id}")
+            logger.info(f"Started processing项目 {self.project_id}")
             
             # 验证前置条件
             errors = self.validate_pipeline_prerequisites()
@@ -145,21 +145,21 @@ class PipelineAdapter:
                     return {"status": "failed", "message": error_msg}
             
             # 更新最终进度
-            await self._update_progress(100, "处理完成")
+            await self._update_progress(100, "Processing complete")
             
             # 保存结果到数据库
             await self._save_results_to_database()
             
-            logger.info(f"项目 {self.project_id} 处理完成")
+            logger.info(f"项目 {self.project_id} Processing complete")
             return {
                 "status": "success",
-                "message": "项目处理完成",
+                "message": "项目Processing complete",
                 "project_id": self.project_id,
                 "results": self.step_results
             }
             
         except Exception as e:
-            error_msg = f"项目处理失败: {str(e)}"
+            error_msg = f"项目Processing failed: {str(e)}"
             logger.error(error_msg)
             return {"status": "failed", "message": error_msg}
     
@@ -356,7 +356,7 @@ class PipelineAdapter:
             if not collections_path.exists():
                 return {"status": "failed", "message": "步骤5结果文件不存在"}
             if not input_video_path.exists():
-                return {"status": "failed", "message": "输入视频文件不存在"}
+                return {"status": "failed", "message": "输入Video file not found"}
             
             result = run_step6_video(
                 clips_with_titles_path=titles_path,

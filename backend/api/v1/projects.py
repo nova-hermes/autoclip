@@ -130,7 +130,7 @@ async def upload_files(
             logger.info(f"项目 {project_id} 异步处理任务已启动，Celery任务ID: {celery_task.id}")
             
         except Exception as e:
-            logger.error(f"启动项目 {project_id} 异步处理失败: {str(e)}")
+            logger.error(f"启动项目 {project_id} 异步Processing failed: {str(e)}")
             # 即使异步任务启动失败，也要返回项目创建成功
             # 用户可以通过重试按钮重新启动处理
         
@@ -427,7 +427,7 @@ async def start_processing(
             else:
                 srt_path = None
         
-        # 更新项目状态为处理中
+        # 更新项目状态为Processing
         project_service.update_project_status(project_id, "processing")
         
         # 发送WebSocket通知：处理开始
@@ -486,7 +486,7 @@ async def retry_processing(
         if not project:
             raise HTTPException(status_code=404, detail="Project not found")
         
-        # 检查项目状态 - 允许失败、完成、处理中和等待中状态重试
+        # 检查项目状态 - 允许失败、完成、Processing和等待中状态重试
         if project.status.value not in ["failed", "completed", "processing", "pending"]:
             raise HTTPException(status_code=400, detail="Project is not in failed, completed, processing, or pending status")
         
@@ -496,7 +496,7 @@ async def retry_processing(
         # 发送WebSocket通知 - 已禁用WebSocket通知
         # await websocket_service.send_processing_started(
         #     project_id=int(project_id),
-        #     message="重新开始处理流程"
+        #     message="重新Started processing流程"
         # )
         
         # 获取文件路径并重新提交任务
@@ -507,7 +507,7 @@ async def retry_processing(
         
         # 检查视频文件是否存在，如果不存在则尝试重新下载
         if not video_path.exists():
-            logger.warning(f"视频文件不存在: {video_path}，尝试重新下载")
+            logger.warning(f"Video file not found: {video_path}，尝试重新下载")
             
             # 检查项目元数据中是否有源URL
             if hasattr(project, 'project_metadata') and project.project_metadata:
@@ -558,7 +558,7 @@ async def retry_processing(
                         )
                         
                         return {
-                            "message": "视频文件不存在，已开始重新下载B站视频",
+                            "message": "Video file not found，已开始重新下载B站视频",
                             "project_id": project_id,
                             "download_task_id": download_task_id,
                             "source_url": source_url
@@ -589,7 +589,7 @@ async def retry_processing(
                         )
                         
                         return {
-                            "message": "视频文件不存在，已开始重新下载YouTube视频",
+                            "message": "Video file not found，已开始重新下载YouTube视频",
                             "project_id": project_id,
                             "download_task_id": download_task_id,
                             "source_url": source_url
@@ -597,9 +597,9 @@ async def retry_processing(
                     else:
                         raise HTTPException(status_code=400, detail=f"不支持的视频源: {source_url}")
                 else:
-                    raise HTTPException(status_code=400, detail=f"视频文件不存在且没有源URL: {video_path}")
+                    raise HTTPException(status_code=400, detail=f"Video file not found且没有源URL: {video_path}")
             else:
-                raise HTTPException(status_code=400, detail=f"视频文件不存在且没有项目元数据: {video_path}")
+                raise HTTPException(status_code=400, detail=f"Video file not found且没有项目元数据: {video_path}")
         
         # 字幕文件是可选的
         srt_path_str = str(srt_path) if srt_path.exists() else None
@@ -739,7 +739,7 @@ async def get_project_logs(
                     "timestamp": "2025-08-01T13:30:00.000Z",
                     "module": "processing",
                     "level": "INFO",
-                    "message": "开始处理项目"
+                    "message": "Started processing项目"
                 },
                 {
                     "timestamp": "2025-08-01T13:30:05.000Z",
@@ -1090,7 +1090,7 @@ async def generate_collection_video(
         # 验证项目是否存在
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取合集记录
         collection = db.query(Collection).filter(Collection.id == collection_id).first()
@@ -1111,7 +1111,7 @@ async def generate_collection_video(
         # 获取切片信息，并按照clip_ids的顺序排列
         clips_dict = {clip.id: clip for clip in db.query(Clip).filter(Clip.id.in_(clip_ids)).all()}
         if len(clips_dict) != len(clip_ids):
-            raise HTTPException(status_code=400, detail="部分切片不存在")
+            raise HTTPException(status_code=400, detail="部分Clip not found")
         
         # 按照用户调整的顺序获取clips
         ordered_clips = [clips_dict[clip_id] for clip_id in clip_ids if clip_id in clips_dict]
@@ -1152,7 +1152,7 @@ async def generate_collection_video(
                             break
                 
                 if not found:
-                    raise HTTPException(status_code=404, detail=f"切片视频文件不存在: {clip.id}")
+                    raise HTTPException(status_code=404, detail=f"切片Video file not found: {clip.id}")
         
         # 生成合集视频文件名 - 使用合集标题作为文件名
         collection_name = collection.name or f"collection_{collection_id}"
@@ -1223,7 +1223,7 @@ async def download_project_file(
         # 验证项目是否存在
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         if collection_id:
             # 下载合集视频
@@ -1233,11 +1233,11 @@ async def download_project_file(
                 raise HTTPException(status_code=404, detail="合集不存在")
             
             if not collection.export_path:
-                raise HTTPException(status_code=404, detail="合集视频文件不存在")
+                raise HTTPException(status_code=404, detail="合集Video file not found")
             
             file_path = Path(collection.export_path)
             if not file_path.exists():
-                raise HTTPException(status_code=404, detail="合集视频文件不存在")
+                raise HTTPException(status_code=404, detail="合集Video file not found")
             
             # 生成下载文件名
             collection_name = collection.name or f"collection_{collection_id}"
@@ -1263,14 +1263,14 @@ async def download_project_file(
             from ...models.clip import Clip
             clip = db.query(Clip).filter(Clip.id == clip_id).first()
             if not clip:
-                raise HTTPException(status_code=404, detail="切片不存在")
+                raise HTTPException(status_code=404, detail="Clip not found")
             
             if not clip.video_path:
-                raise HTTPException(status_code=404, detail="切片视频文件不存在")
+                raise HTTPException(status_code=404, detail="切片Video file not found")
             
             file_path = Path(clip.video_path)
             if not file_path.exists():
-                raise HTTPException(status_code=404, detail="切片视频文件不存在")
+                raise HTTPException(status_code=404, detail="切片Video file not found")
             
             # 生成下载文件名
             clip_title = clip.title or f"clip_{clip_id}"
@@ -1316,7 +1316,7 @@ async def get_collection_thumbnail(
         # 验证项目是否存在
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取合集记录
         from ...models.collection import Collection

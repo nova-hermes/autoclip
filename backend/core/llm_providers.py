@@ -133,7 +133,7 @@ class DashScopeProvider(LLMProvider):
             else:
                 code = getattr(response, 'code', 'N/A')
                 message = getattr(response, 'message', '未知API错误')
-                raise Exception(f"API调用失败 - Status: {response.status_code}, Code: {code}, Message: {message}")
+                raise Exception(f"API call failed - Status: {response.status_code}, Code: {code}, Message: {message}")
                 
         except Exception as e:
             logger.error(f"DashScope调用失败: {str(e)}")

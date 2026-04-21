@@ -48,7 +48,7 @@ def generate_collection_thumbnails():
                 
                 video_path = Path(collection.export_path)
                 if not video_path.exists():
-                    logger.warning(f"合集 '{collection.name}' 的视频文件不存在: {video_path}")
+                    logger.warning(f"合集 '{collection.name}' 的Video file not found: {video_path}")
                     continue
                 
                 # 生成封面文件名
@@ -70,7 +70,7 @@ def generate_collection_thumbnails():
                     logger.error(f"❌ 合集 '{collection.name}' 封面生成失败")
                     
             except Exception as e:
-                logger.error(f"❌ 合集 '{collection.name}' 处理失败: {e}")
+                logger.error(f"❌ 合集 '{collection.name}' Processing failed: {e}")
                 db.rollback()
                 continue
         
@@ -104,7 +104,7 @@ def generate_thumbnail_for_collection(collection_id: str):
         
         video_path = Path(collection.export_path)
         if not video_path.exists():
-            logger.error(f"合集 '{collection.name}' 的视频文件不存在: {video_path}")
+            logger.error(f"合集 '{collection.name}' 的Video file not found: {video_path}")
             return False
         
         # 生成封面文件名

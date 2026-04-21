@@ -97,7 +97,7 @@ class ProgressUpdateService:
                     self.active_tasks[task_id] = {
                         'progress': 0.0,
                         'current_step': '初始化',
-                        'step_details': '开始处理任务',
+                        'step_details': 'Started processing任务',
                         'started_at': datetime.utcnow(),
                         'updated_at': datetime.utcnow()
                     }

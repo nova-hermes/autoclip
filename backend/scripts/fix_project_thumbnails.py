@@ -94,7 +94,7 @@ def fix_file_import_thumbnail(project, db):
     try:
         video_path = Path(project.video_path)
         if not video_path.exists():
-            print(f"⚠️  视频文件不存在: {video_path}")
+            print(f"⚠️  Video file not found: {video_path}")
             return False
         
         # 生成缩略图

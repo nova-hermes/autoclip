@@ -69,12 +69,12 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
   const playerRef = useRef<ReactPlayer>(null)
   const subtitleContainerRef = useRef<HTMLDivElement>(null)
 
-  // 处理播放进度更新
+  // 处理Play进度更新
   const handleProgress = useCallback((progress: { playedSeconds: number }) => {
     setState(prev => ({ ...prev, currentTime: progress.playedSeconds }))
   }, [])
 
-  // 处理播放状态变化
+  // 处理PlayStatus变化
   const handlePlayPause = useCallback(() => {
     setState(prev => ({ ...prev, playing: !prev.playing }))
   }, [])
@@ -96,12 +96,12 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     })
   }, [])
 
-  // 删除选中的字幕段
+  // Delete选中的Subtitles段
   const deleteSelectedSegments = useCallback(() => {
     setState(prev => {
       const selectedSegmentIds = new Set<string>()
       
-      // 根据选中的单词找到对应的字幕段
+      // 根据选中的单词找到对应的Subtitles段
       prev.selectedWords.forEach(wordId => {
         const segment = subtitles.find(seg => 
           seg.words.some(word => word.id === wordId)
@@ -112,7 +112,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
       })
 
       if (selectedSegmentIds.size === 0) {
-        message.warning('请先选择要删除的字幕内容')
+        message.warning('请先选择要Delete的Subtitles内容')
         return prev
       }
 
@@ -135,7 +135,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     })
   }, [subtitles])
 
-  // 删除指定字幕段
+  // Delete指定Subtitles段
   const deleteSegment = useCallback((segmentId: string) => {
     setState(prev => {
       const newDeletedSegments = new Set([...prev.deletedSegments, segmentId])
@@ -197,11 +197,11 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     })
   }, [])
 
-  // 保存编辑结果
+  // SaveEdit结果
   const handleSave = useCallback(() => {
     const operations = state.editHistory.slice(0, state.historyIndex + 1)
     onSave(operations)
-    message.success('编辑已保存')
+    message.success('Edit已Save')
   }, [state.editHistory, state.historyIndex, onSave])
 
   // 处理右键菜单
@@ -218,7 +218,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     }))
   }, [])
 
-  // 关闭右键菜单
+  // Close右键菜单
   const closeContextMenu = useCallback(() => {
     setState(prev => ({
       ...prev,
@@ -226,7 +226,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     }))
   }, [])
 
-  // 处理全局点击关闭右键菜单
+  // 处理全局点击Close右键菜单
   const handleGlobalClick = useCallback(() => {
     if (state.contextMenu.visible) {
       closeContextMenu()
@@ -247,7 +247,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     }
   }, [state.contextMenu.visible, closeContextMenu])
 
-  // 渲染字幕段
+  // 渲染Subtitles段
   const renderSubtitleSegment = (segment: SubtitleSegment) => {
     const isDeleted = state.deletedSegments.has(segment.id)
     const isCurrent = state.currentTime >= segment.startTime && state.currentTime <= segment.endTime
@@ -349,16 +349,16 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
     {
       key: 'hide',
       icon: <EyeInvisibleOutlined />,
-      label: '隐藏字幕',
+      label: '隐藏Subtitles',
       onClick: () => {
-        message.info('隐藏字幕功能开发中')
+        message.info('隐藏Subtitles功能开发中')
         closeContextMenu()
       }
     },
     {
       key: 'delete',
       icon: <DeleteOutlined />,
-      label: '删除片段',
+      label: 'DeleteClip',
       onClick: () => {
         if (state.contextMenu.segmentId) {
           deleteSegment(state.contextMenu.segmentId)
@@ -378,7 +378,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
 
   return (
     <Modal
-      title="字幕编辑器"
+      title="SubtitlesEdit器"
       open={true}
       onCancel={onClose}
       width={1400}
@@ -387,10 +387,10 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
       style={{ top: 20 }}
     >
       <div style={{ display: 'flex', height: '700px', gap: '16px' }}>
-        {/* 左侧字幕列表 */}
+        {/* 左侧Subtitles列表 */}
         <div style={{ width: '300px', display: 'flex', flexDirection: 'column' }}>
           <Card 
-            title="字幕" 
+            title="Subtitles" 
             size="small"
             style={{ height: '100%' }}
             bodyStyle={{ padding: '12px', height: 'calc(100% - 57px)', overflow: 'hidden' }}
@@ -404,7 +404,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                 subtitles.map(renderSubtitleSegment)
               ) : (
                 <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
-                  暂无字幕数据
+                  暂无Subtitles数据
                 </div>
               )}
             </div>
@@ -427,7 +427,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
               {/* 样式模板 */}
               <div style={{ marginBottom: '16px' }}>
                 <Text style={{ color: '#999', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
-                  字幕样式
+                  Subtitles样式
                 </Text>
                 <div 
                   className="style-template"
@@ -493,7 +493,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                 </div>
               </div>
 
-              {/* 创建项目按钮 */}
+              {/* 创建Project按钮 */}
               <div style={{ marginBottom: '16px' }}>
                 <Button 
                   type="primary" 
@@ -519,17 +519,17 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
-                  创建项目
+                  创建Project
                 </Button>
                 <div style={{ color: '#666', fontSize: '12px', textAlign: 'center', marginTop: '4px' }}>
                   00:24.170 - 00:25.855
                 </div>
               </div>
 
-              {/* 编辑工具栏 */}
+              {/* Edit工具栏 */}
               <div style={{ marginBottom: '16px' }}>
                 <Text style={{ color: '#999', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
-                  编辑工具
+                  Edit工具
                 </Text>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <Button 
@@ -540,7 +540,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                     disabled={state.selectedWords.size === 0}
                     style={{ width: '100%' }}
                   >
-                    删除选中 ({state.selectedWords.size})
+                    Delete选中 ({state.selectedWords.size})
                   </Button>
                   <Button 
                     icon={<UndoOutlined />}
@@ -567,7 +567,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                     onClick={handleSave}
                     style={{ width: '100%' }}
                   >
-                    保存编辑
+                    SaveEdit
                   </Button>
                 </Space>
               </div>
@@ -575,7 +575,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
           </Card>
         </div>
 
-        {/* 右侧视频播放器 */}
+        {/* 右侧视频Play器 */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Card 
             title="视频预览" 
@@ -598,7 +598,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
               />
             </div>
             
-            {/* 播放控制 */}
+            {/* Play控制 */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -611,10 +611,10 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                   onClick={handlePlayPause}
                   size="small"
                 >
-                  {state.playing ? '暂停' : '播放'}
+                  {state.playing ? 'Pause' : 'Play'}
                 </Button>
                 <Text style={{ color: '#999', fontSize: '12px' }}>
-                  {formatTime(state.currentTime)} / {formatTime(120)} {/* 假设总时长120秒 */}
+                  {formatTime(state.currentTime)} / {formatTime(120)} {/* 假设Total Duration120秒 */}
                 </Text>
               </Space>
               <Button
@@ -622,7 +622,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
                 onClick={() => setState(prev => ({ ...prev, showDeleted: !prev.showDeleted }))}
                 size="small"
               >
-                {state.showDeleted ? '隐藏已删除' : '显示已删除'}
+                {state.showDeleted ? '隐藏已Delete' : '显示已Delete'}
               </Button>
             </div>
           </Card>
@@ -724,7 +724,7 @@ const SubtitleEditor: React.FC<SubtitleEditorProps> = ({
           left: 100%;
         }
 
-        /* 创建项目按钮效果 */
+        /* 创建Project按钮效果 */
         .create-project-btn::before {
           content: '';
           position: absolute;

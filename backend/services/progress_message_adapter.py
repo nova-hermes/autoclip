@@ -51,7 +51,7 @@ class ProgressMessageAdapter:
             msg.get("phase") or 
             msg.get("current_step") or 
             msg.get("message") or
-            "处理中"
+            "Processing"
         )
         
         # 提取状态

@@ -225,7 +225,7 @@ def _cleanup_temp_files() -> int:
                         cleaned_count += 1
                         logger.info(f"清理临时文件: {file_path}")
         
-        # 清理处理中间文件
+        # 清理Processing间文件
         projects_dir = Path("data/projects")
         if projects_dir.exists():
             for project_dir in projects_dir.iterdir():
@@ -239,7 +239,7 @@ def _cleanup_temp_files() -> int:
                                 if file_age > timedelta(hours=24):
                                     file_path.unlink()
                                     cleaned_count += 1
-                                    logger.info(f"清理处理中间文件: {file_path}")
+                                    logger.info(f"清理Processing间文件: {file_path}")
         
     except Exception as e:
         logger.error(f"清理临时文件失败: {e}")
@@ -339,7 +339,7 @@ def check_data_consistency(self) -> Dict[str, Any]:
             db.close()
             
     except Exception as e:
-        logger.error(f"数据一致性检查失败，错误: {e}")
+        logger.error(f"数据一致性Check failed，错误: {e}")
         raise
 
 

@@ -57,7 +57,7 @@ class AutoClipsException(Exception):
         }
 
 class ConfigurationError(AutoClipsException):
-    """配置错误"""
+    """Configuration error"""
     def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(message, ErrorCategory.CONFIGURATION, ErrorLevel.ERROR, details)
 
@@ -263,8 +263,8 @@ class ErrorHandler:
         pass
     
     def _handle_configuration_error(self, error: ConfigurationError):
-        """处理配置错误"""
-        # 可以在这里添加配置错误的具体处理逻辑
+        """处理Configuration error"""
+        # 可以在这里添加Configuration error的具体处理逻辑
         # 比如加载默认配置、提示用户修复等
         pass
     

@@ -85,7 +85,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
         try:
             await manager.disconnect(user_id)
         except Exception as e:
-            logger.error(f"断开用户连接失败: {e}")
+            logger.error(f"断开用户Connection failed: {e}")
 
 async def handle_client_message(user_id: str, message: Dict[str, Any]):
     """处理客户端消息"""
@@ -148,7 +148,7 @@ async def handle_client_message(user_id: str, message: Dict[str, Any]):
             response = WebSocketMessage.create_system_notification(
                 "unsubscription",
                 "取消订阅成功",
-                f"已取消订阅主题: {topic}",
+                f"Cancelled订阅主题: {topic}",
                 "info"
             )
             await manager.send_personal_message(response, user_id)
@@ -162,7 +162,7 @@ async def handle_client_message(user_id: str, message: Dict[str, Any]):
                 response = WebSocketMessage.create_system_notification(
                     "task_unsubscription",
                     "任务取消订阅成功",
-                    f"已取消订阅任务 {task_id} 的进度更新",
+                    f"Cancelled订阅任务 {task_id} 的进度更新",
                     "info"
                 )
             else:

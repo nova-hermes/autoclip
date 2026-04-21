@@ -40,7 +40,7 @@ def generate_thumbnails_for_projects():
                 # 检查视频文件是否存在
                 video_path = Path(project.video_path)
                 if not video_path.exists():
-                    print(f"⚠️  视频文件不存在: {video_path}")
+                    print(f"⚠️  Video file not found: {video_path}")
                     continue
                 
                 # 生成缩略图
@@ -56,7 +56,7 @@ def generate_thumbnails_for_projects():
                     print(f"❌ 项目 '{project.name}' 缩略图生成失败")
                     
             except Exception as e:
-                print(f"❌ 项目 '{project.name}' 处理失败: {e}")
+                print(f"❌ 项目 '{project.name}' Processing failed: {e}")
                 db.rollback()
                 continue
         
@@ -87,7 +87,7 @@ def generate_thumbnail_for_project(project_id: str):
         # 检查视频文件是否存在
         video_path = Path(project.video_path)
         if not video_path.exists():
-            print(f"❌ 视频文件不存在: {video_path}")
+            print(f"❌ Video file not found: {video_path}")
             return False
         
         print(f"🎬 正在为项目 '{project.name}' ({project.id}) 生成缩略图...")

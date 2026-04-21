@@ -100,7 +100,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
     }
   };
 
-  // 获取健康状态摘要
+  // 获取健康StatusSummary
   const fetchHealthSummary = async (forceCheck = false) => {
     try {
       setLoading(true);
@@ -124,11 +124,11 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
       setHealthData(data);
       
       if (forceCheck) {
-        message.success('健康检查完成');
+        message.success('健康检查Complete');
       }
     } catch (error) {
-      console.error('获取健康状态失败:', error);
-      message.error('获取健康状态失败');
+      console.error('获取健康StatusFailed:', error);
+      message.error('获取健康StatusFailed');
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
           account.account_id === accountId ? updatedAccount : account
         );
         
-        // 重新计算统计数据
+        // 重新计算Statistics数据
         const statusCounts = {
           healthy: 0,
           warning: 0,
@@ -180,16 +180,16 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
         };
       });
       
-      message.success(`账号 ${updatedAccount.username} 检查完成`);
+      message.success(`账号 ${updatedAccount.username} 检查Complete`);
     } catch (error) {
-      console.error('检查账号失败:', error);
-      message.error('检查账号失败');
+      console.error('检查账号Failed:', error);
+      message.error('检查账号Failed');
     } finally {
       setRefreshing(prev => prev.filter(id => id !== accountId));
     }
   };
 
-  // 刷新Cookie
+  // RefreshCookie
   const refreshCookie = async (accountId: number) => {
     try {
       const response = await fetch('/api/v1/health/refresh-cookie', {
@@ -215,16 +215,16 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
         message.warning(result.message);
       }
     } catch (error) {
-      console.error('刷新Cookie失败:', error);
-      message.error('刷新Cookie失败');
+      console.error('RefreshCookieFailed:', error);
+      message.error('RefreshCookieFailed');
     }
   };
 
-  // 获取状态标签
+  // 获取Status标签
   const getStatusTag = (status: string) => {
     const statusConfig = {
       healthy: { color: 'success', icon: <CheckCircleOutlined />, text: '健康' },
-      warning: { color: 'warning', icon: <ExclamationCircleOutlined />, text: '警告' },
+      warning: { color: 'warning', icon: <ExclamationCircleOutlined />, text: 'Warning' },
       critical: { color: 'error', icon: <CloseCircleOutlined />, text: '严重' },
       unknown: { color: 'default', icon: <QuestionCircleOutlined />, text: '未知' }
     };
@@ -285,13 +285,13 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
       ),
     },
     {
-      title: '健康状态',
+      title: '健康Status',
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => getStatusTag(status),
     },
     {
-      title: 'Cookie状态',
+      title: 'CookieStatus',
       key: 'cookie_status',
       render: (record: AccountHealth) => (
         <Space direction="vertical" size="small">
@@ -334,7 +334,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
               setDetailsVisible(true);
             }}
           >
-            详情
+            Details
           </Button>
           {record.status === 'critical' || record.status === 'warning' ? (
             <Button
@@ -342,7 +342,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
               danger
               onClick={() => refreshCookie(record.account_id)}
             >
-              刷新Cookie
+              RefreshCookie
             </Button>
           ) : null}
         </Space>
@@ -355,12 +355,12 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
     fetchHealthSummary();
   }, []);
 
-  // 自动刷新
+  // 自动Refresh
   useEffect(() => {
     if (autoRefresh) {
       const interval = setInterval(() => {
         fetchHealthSummary();
-      }, 60000); // 每分钟刷新一次
+      }, 60000); // 每分钟Refresh一次
       setRefreshInterval(interval);
     } else {
       if (refreshInterval) {
@@ -378,7 +378,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
 
   return (
     <div>
-      {/* 统计卡片 */}
+      {/* Statistics卡片 */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>
           <Card>
@@ -402,7 +402,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
         <Col span={6}>
           <Card>
             <Statistic
-              title="警告账号"
+              title="Warning账号"
               value={healthData?.warning_count || 0}
               valueStyle={{ color: '#cf1322' }}
               prefix={<ExclamationCircleOutlined />}
@@ -437,13 +437,13 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
             loading={loading}
             onClick={() => fetchHealthSummary()}
           >
-            刷新状态
+            RefreshStatus
           </Button>
           <Button
             type={autoRefresh ? 'primary' : 'default'}
             onClick={() => setAutoRefresh(!autoRefresh)}
           >
-            {autoRefresh ? '停止自动刷新' : '开启自动刷新'}
+            {autoRefresh ? 'Stop自动Refresh' : '开启自动Refresh'}
           </Button>
         </Space>
         
@@ -454,11 +454,11 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
         )}
       </Card>
 
-      {/* 警告信息 */}
+      {/* Warning信息 */}
       {healthData && (healthData.critical_count > 0 || healthData.warning_count > 0) && (
         <Alert
-          message="账号健康警告"
-          description={`发现 ${healthData.critical_count} 个严重问题和 ${healthData.warning_count} 个警告，请及时处理`}
+          message="账号健康Warning"
+          description={`发现 ${healthData.critical_count} 个严重问题和 ${healthData.warning_count} 个Warning，请及时处理`}
           type="warning"
           showIcon
           style={{ marginBottom: 16 }}
@@ -466,7 +466,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
       )}
 
       {/* 账号列表 */}
-      <Card title="账号健康状态">
+      <Card title="账号健康Status">
         <Spin spinning={loading}>
           <Table
             columns={columns}
@@ -482,14 +482,14 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
         </Spin>
       </Card>
 
-      {/* 详情弹窗 */}
+      {/* Details弹窗 */}
       <Modal
-        title={`账号详情 - ${selectedAccount?.username}`}
+        title={`账号Details - ${selectedAccount?.username}`}
         open={detailsVisible}
         onCancel={() => setDetailsVisible(false)}
         footer={[
           <Button key="close" onClick={() => setDetailsVisible(false)}>
-            关闭
+            Close
           </Button>,
           <Button
             key="refresh"
@@ -513,8 +513,8 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
                 <Card title="基本信息" size="small">
                   <p><strong>账号ID:</strong> {selectedAccount.account_id}</p>
                   <p><strong>用户名:</strong> {selectedAccount.username}</p>
-                  <p><strong>整体状态:</strong> {getStatusTag(selectedAccount.status)}</p>
-                  <p><strong>状态消息:</strong> {selectedAccount.message}</p>
+                  <p><strong>整体Status:</strong> {getStatusTag(selectedAccount.status)}</p>
+                  <p><strong>Status消息:</strong> {selectedAccount.message}</p>
                 </Card>
               </Col>
               <Col span={12}>
@@ -527,17 +527,17 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
               </Col>
             </Row>
             
-            <Card title="详细状态" size="small" style={{ marginTop: 16 }}>
+            <Card title="详细Status" size="small" style={{ marginTop: 16 }}>
               {selectedAccount.details.cookie && (
                 <div style={{ marginBottom: 12 }}>
-                  <strong>Cookie状态:</strong> {getStatusTag(selectedAccount.details.cookie.status)}
+                  <strong>CookieStatus:</strong> {getStatusTag(selectedAccount.details.cookie.status)}
                   <p>{selectedAccount.details.cookie.message}</p>
                 </div>
               )}
               
               {selectedAccount.details.login && (
                 <div style={{ marginBottom: 12 }}>
-                  <strong>登录状态:</strong> {getStatusTag(selectedAccount.details.login.status)}
+                  <strong>登录Status:</strong> {getStatusTag(selectedAccount.details.login.status)}
                   <p>{selectedAccount.details.login.message}</p>
                   {selectedAccount.details.login.user_info && (
                     <p>用户信息: {selectedAccount.details.login.user_info.uname} (等级 {selectedAccount.details.login.user_info.level})</p>
@@ -547,7 +547,7 @@ const AccountHealthMonitor: React.FC<AccountHealthMonitorProps> = ({ onRefresh }
               
               {selectedAccount.details.upload && (
                 <div>
-                  <strong>上传权限:</strong> {getStatusTag(selectedAccount.details.upload.status)}
+                  <strong>Upload权限:</strong> {getStatusTag(selectedAccount.details.upload.status)}
                   <p>{selectedAccount.details.upload.message}</p>
                 </div>
               )}

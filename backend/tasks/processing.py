@@ -40,7 +40,7 @@ def run_async_notification(coro):
             
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(run_in_thread)
-                return future.result(timeout=10)  # 10秒超时
+                return future.result(timeout=10)  # 10秒Timeout
         else:
             # 如果事件循环没有运行，直接运行
             return loop.run_until_complete(coro)
@@ -67,7 +67,7 @@ def process_video_pipeline(self, project_id: str, input_video_path: str, input_s
         处理结果
     """
     task_id = self.request.id
-    logger.info(f"开始处理视频流水线: {project_id}, 任务ID: {task_id}")
+    logger.info(f"Started processing视频流水线: {project_id}, 任务ID: {task_id}")
     
     try:
         # 创建数据库会话
@@ -107,8 +107,8 @@ def process_video_pipeline(self, project_id: str, input_video_path: str, input_s
             
             # 检查处理结果
             if result.get("status") == "failed":
-                # 处理失败
-                error_msg = result.get("message", "处理失败")
+                # Processing failed
+                error_msg = result.get("message", "Processing failed")
                 task.status = TaskStatus.FAILED
                 task.error_message = error_msg
                 task.result_data = result
@@ -140,7 +140,7 @@ def process_video_pipeline(self, project_id: str, input_video_path: str, input_s
                 # 处理成功
                 task.status = TaskStatus.COMPLETED
                 task.progress = 100
-                task.current_step = "处理完成"
+                task.current_step = "Processing complete"
                 task.result_data = result
                 
                 # 更新项目状态为已完成
@@ -160,7 +160,7 @@ def process_video_pipeline(self, project_id: str, input_video_path: str, input_s
                 #     notification_service.send_processing_complete(project_id, task_id, result)
                 # )
             
-            logger.info(f"视频流水线处理完成: {project_id}")
+            logger.info(f"视频流水线Processing complete: {project_id}")
             return {
                 "success": True,
                 "project_id": project_id,
@@ -173,7 +173,7 @@ def process_video_pipeline(self, project_id: str, input_video_path: str, input_s
             db.close()
             
     except Exception as e:
-        error_msg = f"视频流水线处理失败: {str(e)}"
+        error_msg = f"视频流水线Processing failed: {str(e)}"
         logger.error(error_msg)
         
         # 更新任务状态为失败
@@ -217,7 +217,7 @@ def process_single_step(self, project_id: str, step: str, config: Dict[str, Any]
         处理结果
     """
     task_id = self.request.id
-    logger.info(f"开始处理单个步骤: {project_id}, 步骤: {step}, 任务ID: {task_id}")
+    logger.info(f"Started processing单个步骤: {project_id}, 步骤: {step}, 任务ID: {task_id}")
     
     try:
         # 发送开始通知
@@ -268,21 +268,21 @@ def process_single_step(self, project_id: str, step: str, config: Dict[str, Any]
                 raise Exception(f"未知的步骤类型: {step}")
             
             if not result.get("success"):
-                raise Exception(f"步骤 {step} 处理失败: {result.get('error')}")
+                raise Exception(f"步骤 {step} Processing failed: {result.get('error')}")
             
             # 发送完成通知
             run_async_notification(
                 notification_service.send_processing_complete(project_id, task_id, result)
             )
             
-            logger.info(f"单个步骤处理完成: {project_id}, 步骤: {step}")
+            logger.info(f"单个步骤Processing complete: {project_id}, 步骤: {step}")
             return result
             
         finally:
             db.close()
             
     except Exception as e:
-        error_msg = f"单个步骤处理失败: {str(e)}"
+        error_msg = f"单个步骤Processing failed: {str(e)}"
         logger.error(error_msg)
         
         # 发送错误通知

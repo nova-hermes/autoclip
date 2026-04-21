@@ -475,7 +475,7 @@ class ProcessingOrchestrator:
                         step_name = "视频切割"
                     else:
                         current_step = 6
-                        step_name = "处理完成"
+                        step_name = "Processing complete"
             else:
                 # 根据步骤编号获取步骤名称
                 step_name_map = {
@@ -486,14 +486,14 @@ class ProcessingOrchestrator:
                     5: "主题聚类",
                     6: "视频切割"
                 }
-                step_name = step_name_map.get(current_step, "处理中...")
+                step_name = step_name_map.get(current_step, "Processing...")
             
             # 构建进度消息
             progress_message = f"正在执行{step_name}..."
             if error_message:
-                progress_message = f"处理失败: {error_message}"
+                progress_message = f"Processing failed: {error_message}"
             elif status == TaskStatus.COMPLETED:
-                progress_message = "处理完成"
+                progress_message = "Processing complete"
             
             # 构建富消息载荷
             payload = {
@@ -523,7 +523,7 @@ class ProcessingOrchestrator:
                                 asyncio.run,
                                 self._async_send_progress_update(payload)
                             )
-                            future.result(timeout=5)  # 5秒超时
+                            future.result(timeout=5)  # 5秒Timeout
                     else:
                         # 如果事件循环没有运行，直接运行
                         loop.run_until_complete(

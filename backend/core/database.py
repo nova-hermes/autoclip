@@ -97,7 +97,7 @@ def init_database():
     
     # 测试连接
     if not test_connection():
-        print("❌ 数据库连接失败")
+        print("❌ 数据库Connection failed")
         return False
     
     # 创建表

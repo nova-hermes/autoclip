@@ -66,9 +66,9 @@ async def execute_real_pipeline(project_id: str):
             
             # 验证文件存在
             if not input_video_path.exists():
-                raise FileNotFoundError(f"视频文件不存在: {input_video_path}")
+                raise FileNotFoundError(f"Video file not found: {input_video_path}")
             if not input_srt_path.exists():
-                raise FileNotFoundError(f"字幕文件不存在: {input_srt_path}")
+                raise FileNotFoundError(f"Subtitle file not found: {input_srt_path}")
             
             logger.info(f"文件路径验证成功:")
             logger.info(f"  视频: {input_video_path}")
@@ -97,8 +97,8 @@ async def execute_real_pipeline(project_id: str):
             
             # 检查处理结果
             if result.get('status') == 'failed':
-                error_msg = result.get('message', '处理失败')
-                logger.error(f"流水线处理失败: {error_msg}")
+                error_msg = result.get('message', 'Processing failed')
+                logger.error(f"流水线Processing failed: {error_msg}")
                 
                 # 更新任务状态为失败
                 task.status = TaskStatus.FAILED
@@ -118,13 +118,13 @@ async def execute_real_pipeline(project_id: str):
                 # 更新任务状态为完成
                 task.status = TaskStatus.COMPLETED
                 task.progress = 100
-                task.current_step = "处理完成"
+                task.current_step = "Processing complete"
                 db.commit()
                 
                 return {
                     "success": True,
                     "result": result,
-                    "message": "流水线处理完成"
+                    "message": "流水线Processing complete"
                 }
                 
         finally:

@@ -100,7 +100,7 @@ class UploadQueueService:
             # 验证视频文件
             import os
             if not os.path.exists(video_path):
-                raise ValueError(f"视频文件不存在: {video_path}")
+                raise ValueError(f"Video file not found: {video_path}")
             
             # 如果没有指定账号，自动选择最佳账号
             if not account_id:
@@ -184,7 +184,7 @@ class UploadQueueService:
             if task.task_id in self.task_queue:
                 del self.task_queue[task.task_id]
             
-            logger.info(f"开始处理上传任务: {task.task_id}")
+            logger.info(f"Started processing上传任务: {task.task_id}")
             
             # 提交到Celery
             celery_task = upload_video_task.delay(
@@ -288,7 +288,7 @@ class UploadQueueService:
                 
                 task.status = TaskStatus.CANCELLED
                 self._move_task_to_completed(task)
-                logger.info(f"取消处理中的任务: {task_id}")
+                logger.info(f"取消Processing的任务: {task_id}")
                 return True
             
             return False

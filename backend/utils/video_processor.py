@@ -202,7 +202,7 @@ class VideoProcessor:
             valid_clips = []
             for clip_path in clips_list:
                 if not clip_path.exists():
-                    logger.warning(f"视频文件不存在，跳过: {clip_path}")
+                    logger.warning(f"Video file not found，跳过: {clip_path}")
                     continue
                 valid_clips.append(clip_path)
             

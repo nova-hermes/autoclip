@@ -53,13 +53,13 @@ class TestSpecificExceptions:
     
     def test_api_error(self):
         """测试API错误"""
-        error = APIError("API调用失败", status_code=400)
+        error = APIError("API call failed", status_code=400)
         assert error.category == ErrorCategory.API
         assert error.details["status_code"] == 400
     
     def test_network_error(self):
         """测试网络错误"""
-        original_exception = ConnectionError("连接失败")
+        original_exception = ConnectionError("Connection failed")
         error = NetworkError("网络错误", original_exception=original_exception)
         assert error.category == ErrorCategory.NETWORK
         assert error.original_exception == original_exception
@@ -72,7 +72,7 @@ class TestSpecificExceptions:
     
     def test_processing_error(self):
         """测试处理错误"""
-        error = ProcessingError("处理失败", step="Step 1")
+        error = ProcessingError("Processing failed", step="Step 1")
         assert error.category == ErrorCategory.PROCESSING
         assert error.details["step"] == "Step 1"
     

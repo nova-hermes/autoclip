@@ -704,7 +704,7 @@ class DataSyncService:
     def _update_project_status_if_completed(self, project_id: str, project_dir: Path):
         """检查项目是否已完成处理，如果是则更新状态为completed"""
         try:
-            # 检查是否有step6_video_output.json文件，这是处理完成的标志
+            # 检查是否有step6_video_output.json文件，这是Processing complete的标志
             step6_output_file = project_dir / "output" / "step6_video_output.json"
             
             if step6_output_file.exists():

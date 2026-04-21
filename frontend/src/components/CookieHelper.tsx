@@ -22,7 +22,7 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
         <div>
           <Alert
             message="第一步：登录B站"
-            description="请确保您已经在浏览器中成功登录了B站账号"
+            description="请确保您已经在浏览器中Success登录了B站账号"
             type="info"
             showIcon
             style={{ marginBottom: 16 }}
@@ -38,7 +38,7 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
               3. 使用您的B站账号登录
             </Paragraph>
             <Paragraph>
-              4. 确认登录成功后，您应该能看到您的用户名显示在右上角
+              4. Confirm登录Success后，您应该能看到您的用户名显示在右上角
             </Paragraph>
           </Card>
         </div>
@@ -105,13 +105,13 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
       )
     },
     {
-      title: '刷新页面',
-      description: '刷新B站页面以捕获请求',
+      title: 'Refresh页面',
+      description: 'RefreshB站页面以捕获请求',
       content: (
         <div>
           <Alert
-            message="第四步：刷新页面"
-            description="刷新B站页面以捕获网络请求"
+            message="第四步：Refresh页面"
+            description="RefreshB站页面以捕获网络请求"
             type="info"
             showIcon
             style={{ marginBottom: 16 }}
@@ -121,14 +121,14 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
               1. 确保Network标签页已打开
             </Paragraph>
             <Paragraph>
-              2. 按 <Text code>F5</Text> 或点击浏览器的刷新按钮
+              2. 按 <Text code>F5</Text> 或点击浏览器的Refresh按钮
             </Paragraph>
             <Paragraph>
               3. 观察Network面板中出现的请求列表
             </Paragraph>
             <Divider />
             <Paragraph type="secondary">
-              刷新后，Network面板会显示页面加载过程中的所有网络请求
+              Refresh后，Network面板会显示页面加载过程中的所有网络请求
             </Paragraph>
           </Card>
         </div>
@@ -194,7 +194,7 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
               复制的Cookie字符串可以直接粘贴到AutoClip的Cookie输入框中
             </Paragraph>
             <Alert
-              message="重要提示"
+              message="重要Notice"
               description="Cookie包含您的登录信息，请妥善保管，不要分享给他人"
               type="warning"
               showIcon
@@ -225,7 +225,7 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
       onCancel={onClose}
       footer={[
         <Button key="back" onClick={onClose}>
-          关闭
+          Close
         </Button>,
         <Button
           key="copy"
@@ -263,7 +263,7 @@ const CookieHelper: React.FC<CookieHelperProps> = ({ visible, onClose }) => {
           SESSDATA=your_sessdata_here; bili_jct=your_bili_jct_here; DedeUserID=your_dedeuserid_here; buvid3=your_buvid3_here
         </Paragraph>
         <Paragraph type="secondary" style={{ fontSize: '12px' }}>
-          注意：实际的Cookie值会比这个示例长很多，包含更多的字段
+          注意：实际的Cookie值会比这个示例长很多，包含More的字段
         </Paragraph>
       </Card>
     </Modal>

@@ -64,7 +64,7 @@ async def get_clip_subtitles(
         # 获取项目信息
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取片段信息
         from ...models.clip import Clip
@@ -78,7 +78,7 @@ async def get_clip_subtitles(
         srt_file = project_dir / "raw" / "input.srt"
         
         if not srt_file.exists():
-            raise HTTPException(status_code=404, detail="字幕文件不存在")
+            raise HTTPException(status_code=404, detail="Subtitle file not found")
         
         # 解析字幕数据
         subtitle_data = subtitle_processor.parse_srt_to_word_level(srt_file)
@@ -143,7 +143,7 @@ async def edit_clip_by_subtitles(
         # 获取项目信息
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取片段信息
         from ...models.clip import Clip
@@ -158,13 +158,13 @@ async def edit_clip_by_subtitles(
         # 查找原始视频文件
         video_files = list(project_dir.glob("raw/*.mp4"))
         if not video_files:
-            raise HTTPException(status_code=404, detail="原始视频文件不存在")
+            raise HTTPException(status_code=404, detail="原始Video file not found")
         original_video = video_files[0]
         
         # 查找字幕文件
         srt_file = project_dir / "raw" / "input.srt"
         if not srt_file.exists():
-            raise HTTPException(status_code=404, detail="字幕文件不存在")
+            raise HTTPException(status_code=404, detail="Subtitle file not found")
         
         # 解析字幕数据
         subtitle_data = subtitle_processor.parse_srt_to_word_level(srt_file)
@@ -250,14 +250,14 @@ async def get_edited_video(
         # 检查项目是否存在
         project = await project_service.get_project(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 查找编辑后的视频文件
         projects_dir = get_projects_directory()
         edited_video_path = projects_dir / project_id / "edited_clips" / f"{clip_id}_edited.mp4"
         
         if not edited_video_path.exists():
-            raise HTTPException(status_code=404, detail="编辑后的视频文件不存在")
+            raise HTTPException(status_code=404, detail="编辑后的Video file not found")
         
         # 返回视频文件
         return FileResponse(
@@ -286,7 +286,7 @@ async def create_edit_preview(
         # 获取项目信息
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取片段信息
         from ...models.clip import Clip
@@ -300,12 +300,12 @@ async def create_edit_preview(
         
         video_files = list(project_dir.glob("raw/*.mp4"))
         if not video_files:
-            raise HTTPException(status_code=404, detail="原始视频文件不存在")
+            raise HTTPException(status_code=404, detail="原始Video file not found")
         original_video = video_files[0]
         
         srt_file = project_dir / "raw" / "input.srt"
         if not srt_file.exists():
-            raise HTTPException(status_code=404, detail="字幕文件不存在")
+            raise HTTPException(status_code=404, detail="Subtitle file not found")
         
         # 解析字幕数据
         subtitle_data = subtitle_processor.parse_srt_to_word_level(srt_file)
@@ -365,7 +365,7 @@ async def get_preview_segment(
         # 检查项目是否存在
         project = project_service.get(project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 查找预览文件
         projects_dir = get_projects_directory()

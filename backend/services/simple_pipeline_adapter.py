@@ -49,7 +49,7 @@ class SimplePipelineAdapter:
                 
                 video_file_path = Path(video_path)
                 if not video_file_path.exists():
-                    logger.error(f"视频文件不存在: {video_path}")
+                    logger.error(f"Video file not found: {video_path}")
                     return None
                 
                 # 使用bcut-asr生成字幕
@@ -113,7 +113,7 @@ class SimplePipelineAdapter:
         Returns:
             处理结果
         """
-        logger.info(f"开始处理项目: {self.project_id}")
+        logger.info(f"Started processing项目: {self.project_id}")
         
         try:
             # 清除之前的进度数据
@@ -158,7 +158,7 @@ class SimplePipelineAdapter:
                     import json
                     with open(outline_file, 'w', encoding='utf-8') as f:
                         json.dump(outlines, f, ensure_ascii=False, indent=2)
-            emit_progress(self.project_id, "SUBTITLE", "字幕处理完成", subpercent=50)
+            emit_progress(self.project_id, "SUBTITLE", "字幕Processing complete", subpercent=50)
             
             # 阶段3: 内容分析
             emit_progress(self.project_id, "ANALYZE", "开始内容分析")
@@ -246,8 +246,8 @@ class SimplePipelineAdapter:
                 video_result = {"status": "skipped", "message": "没有内容可处理"}
             emit_progress(self.project_id, "EXPORT", "视频导出完成", subpercent=100)
             
-            # 阶段6: 处理完成
-            emit_progress(self.project_id, "DONE", "处理完成")
+            # 阶段6: Processing complete
+            emit_progress(self.project_id, "DONE", "Processing complete")
             
             # 自动同步数据到数据库
             try:
@@ -267,7 +267,7 @@ class SimplePipelineAdapter:
             except Exception as e:
                 logger.error(f"数据同步失败: {e}")
             
-            logger.info(f"项目处理完成: {self.project_id}")
+            logger.info(f"项目Processing complete: {self.project_id}")
             return {
                 "status": "succeeded",
                 "project_id": self.project_id,
@@ -283,11 +283,11 @@ class SimplePipelineAdapter:
             }
             
         except Exception as e:
-            error_msg = f"流水线处理失败: {str(e)}"
+            error_msg = f"流水线Processing failed: {str(e)}"
             logger.error(error_msg)
             
             # 发送失败状态
-            emit_progress(self.project_id, "DONE", f"处理失败: {error_msg}")
+            emit_progress(self.project_id, "DONE", f"Processing failed: {error_msg}")
             
             return {
                 "status": "failed",

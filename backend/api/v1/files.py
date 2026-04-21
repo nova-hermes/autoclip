@@ -39,7 +39,7 @@ async def upload_files(
         # 验证项目是否存在
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 初始化存储服务
         storage_service = StorageService(project_id)
@@ -97,8 +97,8 @@ async def upload_files(
         }
         
     except Exception as e:
-        logger.error(f"文件上传失败: {e}")
-        raise HTTPException(status_code=500, detail=f"文件上传失败: {str(e)}")
+        logger.error(f"File upload failed: {e}")
+        raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
 
 @router.get("/clips/{clip_id}/content")
 async def get_clip_content(
@@ -115,7 +115,7 @@ async def get_clip_content(
         # 获取切片记录
         clip = db.query(Clip).filter(Clip.id == clip_id).first()
         if not clip:
-            raise HTTPException(status_code=404, detail="切片不存在")
+            raise HTTPException(status_code=404, detail="Clip not found")
         
         # 从文件系统获取完整内容
         from ...repositories.clip_repository import ClipRepository
@@ -199,7 +199,7 @@ async def download_clip_file(
         # 获取切片记录
         clip = db.query(Clip).filter(Clip.id == clip_id).first()
         if not clip:
-            raise HTTPException(status_code=404, detail="切片不存在")
+            raise HTTPException(status_code=404, detail="Clip not found")
         
         if not clip.video_path:
             raise HTTPException(status_code=404, detail="切片文件不存在")
@@ -236,12 +236,12 @@ async def get_project_clip_video(
         # 验证项目是否存在
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取切片记录
         clip = db.query(Clip).filter(Clip.id == clip_id).first()
         if not clip:
-            raise HTTPException(status_code=404, detail="切片不存在")
+            raise HTTPException(status_code=404, detail="Clip not found")
         
         # 验证切片是否属于该项目
         if clip.project_id != project_id:
@@ -323,7 +323,7 @@ async def get_project_collection_video(
         # 验证项目是否存在
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取合集记录
         collection = db.query(Collection).filter(Collection.id == collection_id).first()
@@ -372,7 +372,7 @@ async def get_project_storage_info(
         # 验证项目是否存在
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 获取存储信息
         storage_service = StorageService(project_id)
@@ -409,7 +409,7 @@ async def cleanup_project_files(
         # 验证项目是否存在
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
         
         # 清理旧文件
         storage_service = StorageService(project_id)

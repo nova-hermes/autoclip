@@ -12,7 +12,7 @@ from .base import BaseModel
 class CollectionStatus(str, enum.Enum):
     """合集状态枚举"""
     CREATED = "created"           # 已创建
-    PROCESSING = "processing"     # 处理中
+    PROCESSING = "processing"     # Processing
     COMPLETED = "completed"       # 已完成
     ERROR = "error"              # 错误
     DELETED = "deleted"          # 已删除

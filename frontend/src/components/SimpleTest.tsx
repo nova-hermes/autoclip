@@ -13,7 +13,7 @@ export const SimpleTest: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('📤 开始API调用测试');
+    console.log('📤 StartAPI调用测试');
     fetch('http://localhost:8000/api/v1/tasks/project/64d5768e-7b6b-40d0-9aed-f216768a6526')
       .then(response => response.json())
       .then(data => {
@@ -21,7 +21,7 @@ export const SimpleTest: React.FC = () => {
         setTasks(data.data.tasks || []);
       })
       .catch(error => {
-        console.error('❌ API调用失败:', error);
+        console.error('❌ API调用Failed:', error);
       });
   }, []);
 
@@ -30,7 +30,7 @@ export const SimpleTest: React.FC = () => {
       <Card title="简单测试组件">
         <Text>组件加载次数: {count}</Text>
         <br />
-        <Text>任务数量: {tasks.length}</Text>
+        <Text>任务Count: {tasks.length}</Text>
         <br />
         <Text>任务列表:</Text>
         <ul>

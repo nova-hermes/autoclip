@@ -1,5 +1,5 @@
 """
-统一错误处理中间件
+统一错误Processing间件
 为FastAPI应用提供统一的错误处理机制
 """
 
@@ -164,7 +164,7 @@ def handle_generic_exception(exc: Exception, request_id: str = None) -> JSONResp
     return create_error_response(
         status_code=500,
         error_code="INTERNAL_SERVER_ERROR",
-        message="服务器内部错误",
+        message="Internal server error",
         details={"exception_type": type(exc).__name__},
         request_id=request_id
     )

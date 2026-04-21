@@ -21,7 +21,7 @@ async def process_project(
     project_id: str,
     processing_service: ProcessingService = Depends(get_processing_service)
 ):
-    """开始处理项目"""
+    """Started processing项目"""
     try:
         result = processing_service.process_project(project_id)
         return {
@@ -34,7 +34,7 @@ async def process_project(
     except FileNotFoundError as e:
         raise HTTPException(status_code=400, detail=f"缺少必要文件: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"处理失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Processing failed: {str(e)}")
 
 
 @router.get("/projects/{project_id}/processing-status")
@@ -64,10 +64,10 @@ async def process_step(
         # 这里可以扩展为处理单个步骤
         result = processing_service.process_project(project_id)
         return {
-            "message": f"步骤 {step_number} 处理完成",
+            "message": f"步骤 {step_number} Processing complete",
             "project_id": project_id,
             "step": step_number,
             "result": result
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"步骤处理失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"步骤Processing failed: {str(e)}")

@@ -37,12 +37,12 @@ class AutoPipelineService:
         try:
             logger.info(f"自动启动项目流水线: {project_id}")
             
-            # 检查项目是否已经在处理中
+            # 检查项目是否已经在Processing
             if project_id in self.processing_projects:
-                logger.warning(f"项目 {project_id} 已在处理中，跳过")
-                return {"status": "skipped", "message": "项目已在处理中"}
+                logger.warning(f"项目 {project_id} 已在Processing，跳过")
+                return {"status": "skipped", "message": "项目已在Processing"}
             
-            # 标记项目为处理中
+            # 标记项目为Processing
             self.processing_projects.add(project_id)
             
             # 获取项目信息
@@ -88,7 +88,7 @@ class AutoPipelineService:
                 project.updated_at = datetime.utcnow()
                 db.commit()
                 
-                logger.info(f"项目 {project_id} 状态已更新为处理中")
+                logger.info(f"项目 {project_id} 状态已更新为Processing")
                 
                 # 启动进度监控
                 await progress_update_service.start_progress_monitoring(task.id)
@@ -105,7 +105,7 @@ class AutoPipelineService:
                 
                 # 检查文件是否存在
                 if not Path(input_video_path).exists():
-                    raise ValueError(f"视频文件不存在: {input_video_path}")
+                    raise ValueError(f"Video file not found: {input_video_path}")
                 
                 logger.info(f"视频文件: {input_video_path}")
                 logger.info(f"字幕文件: {input_srt_path if Path(input_srt_path).exists() else '不存在'}")
@@ -142,7 +142,7 @@ class AutoPipelineService:
                 
         except Exception as e:
             logger.error(f"自动启动流水线失败: {e}")
-            # 移除处理中标记
+            # 移除Processing标记
             self.processing_projects.discard(project_id)
             
             # 更新项目状态为失败
@@ -215,9 +215,9 @@ class AutoPipelineService:
                     db.commit()
                     logger.info(f"项目 {project_id} 已标记为失败")
                     
-                    # 从处理中项目集合中移除
+                    # 从Processing项目集合中移除
                     self.processing_projects.discard(project_id)
-                    logger.info(f"项目 {project_id} 已从处理中集合移除")
+                    logger.info(f"项目 {project_id} 已从Processing集合移除")
             finally:
                 db.close()
         except Exception as e:
@@ -234,7 +234,7 @@ class AutoPipelineService:
                 ).all()
                 
                 for project in failed_projects:
-                    logger.info(f"检查失败项目: {project.id}")
+                    logger.info(f"Check failed项目: {project.id}")
                     
                     # 检查是否有未完成的任务
                     incomplete_tasks = db.query(Task).filter(
@@ -252,7 +252,7 @@ class AutoPipelineService:
                 db.close()
                 
         except Exception as e:
-            logger.error(f"检查失败流水线时出错: {e}")
+            logger.error(f"Check failed流水线时出错: {e}")
     
     async def auto_start_all_pending_pipelines(self):
         """自动启动所有等待中的流水线"""

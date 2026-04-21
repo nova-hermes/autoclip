@@ -39,7 +39,7 @@ class ProgressStatus(Enum):
     RUNNING = "RUNNING"        # 运行中
     COMPLETED = "COMPLETED"    # 已完成
     FAILED = "FAILED"          # 失败
-    CANCELLED = "CANCELLED"    # 已取消
+    CANCELLED = "CANCELLED"    # Cancelled
 
 
 @dataclass
@@ -128,7 +128,7 @@ class EnhancedProgressService:
             self.redis_client.ping()
             logger.info("Redis连接成功")
         except Exception as e:
-            logger.warning(f"Redis连接失败，将使用内存缓存: {e}")
+            logger.warning(f"RedisConnection failed，将使用内存缓存: {e}")
             self.redis_client = None
     
     def _get_redis_key(self, project_id: str) -> str:
@@ -175,7 +175,7 @@ class EnhancedProgressService:
         return max(0, int(remaining))
     
     def start_progress(self, project_id: str, task_id: Optional[str] = None, 
-                      initial_message: str = "开始处理") -> ProgressInfo:
+                      initial_message: str = "Started processing") -> ProgressInfo:
         """开始进度跟踪"""
         try:
             progress_info = ProgressInfo(
@@ -273,7 +273,7 @@ class EnhancedProgressService:
                 original_exception=e
             )
     
-    def complete_progress(self, project_id: str, message: str = "处理完成") -> ProgressInfo:
+    def complete_progress(self, project_id: str, message: str = "Processing complete") -> ProgressInfo:
         """完成进度"""
         try:
             progress_info = self.get_progress(project_id)
@@ -309,7 +309,7 @@ class EnhancedProgressService:
             # 触发回调
             self._trigger_callbacks(progress_info)
             
-            logger.info(f"项目 {project_id} 处理完成")
+            logger.info(f"项目 {project_id} Processing complete")
             return progress_info
             
         except Exception as e:
@@ -355,7 +355,7 @@ class EnhancedProgressService:
             # 触发回调
             self._trigger_callbacks(progress_info)
             
-            logger.error(f"项目 {project_id} 处理失败: {error_message}")
+            logger.error(f"项目 {project_id} Processing failed: {error_message}")
             return progress_info
             
         except Exception as e:
@@ -571,7 +571,7 @@ progress_service = EnhancedProgressService()
 
 # 便捷函数
 def start_progress(project_id: str, task_id: Optional[str] = None, 
-                  initial_message: str = "开始处理") -> ProgressInfo:
+                  initial_message: str = "Started processing") -> ProgressInfo:
     """开始进度跟踪"""
     return progress_service.start_progress(project_id, task_id, initial_message)
 
@@ -583,7 +583,7 @@ def update_progress(project_id: str, stage: ProgressStage,
     return progress_service.update_progress(project_id, stage, message, sub_progress, metadata)
 
 
-def complete_progress(project_id: str, message: str = "处理完成") -> ProgressInfo:
+def complete_progress(project_id: str, message: str = "Processing complete") -> ProgressInfo:
     """完成进度"""
     return progress_service.complete_progress(project_id, message)
 

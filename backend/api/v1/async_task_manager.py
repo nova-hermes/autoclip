@@ -100,7 +100,7 @@ class AsyncTaskManager:
         if task_id in self.running_tasks:
             task = self.running_tasks[task_id]
             task.cancel()
-            logger.info(f"任务已取消: {task_id}")
+            logger.info(f"任务Cancelled: {task_id}")
             return True
         return False
     

@@ -65,38 +65,38 @@ celery_app.autodiscover_tasks([
 @celery_app.task(bind=True, name='backend.tasks.processing.process_video_pipeline')
 def process_video_pipeline(self, project_id: str, input_video_path: str, input_srt_path: str):
     """视频处理流水线任务"""
-    print(f"开始处理项目: {project_id}")
+    print(f"Started processing项目: {project_id}")
     print(f"视频路径: {input_video_path}")
     print(f"字幕路径: {input_srt_path}")
     
     # 模拟处理过程
     import time
     for i in range(6):
-        print(f"步骤 {i+1}/6: 处理中...")
+        print(f"步骤 {i+1}/6: Processing...")
         time.sleep(2)
     
-    print(f"项目 {project_id} 处理完成")
+    print(f"项目 {project_id} Processing complete")
     return {
         "success": True,
         "project_id": project_id,
-        "message": "视频处理完成"
+        "message": "视频Processing complete"
     }
 
 @celery_app.task(bind=True, name='backend.tasks.processing.process_single_step')
 def process_single_step(self, project_id: str, step: str, config: dict):
     """单个步骤处理任务"""
-    print(f"开始处理项目 {project_id} 的步骤: {step}")
+    print(f"Started processing项目 {project_id} 的步骤: {step}")
     
     # 模拟处理过程
     import time
     time.sleep(3)
     
-    print(f"步骤 {step} 处理完成")
+    print(f"步骤 {step} Processing complete")
     return {
         "success": True,
         "project_id": project_id,
         "step": step,
-        "message": f"步骤 {step} 处理完成"
+        "message": f"步骤 {step} Processing complete"
     }
 
 @celery_app.task(bind=True, name='backend.tasks.upload.upload_to_bilibili')

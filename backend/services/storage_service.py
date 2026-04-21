@@ -148,7 +148,7 @@ class StorageService:
             if not project_dir.exists():
                 return
             
-            # 清理处理中间文件
+            # 清理Processing间文件
             processing_dir = project_dir / "processing"
             if processing_dir.exists():
                 for file_path in processing_dir.iterdir():

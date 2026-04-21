@@ -16,20 +16,20 @@ const ProjectStatusIndicator: React.FC<ProjectStatusIndicatorProps> = ({
   project,
   size = 'default'
 }) => {
-  // 暂时使用简单的状态处理
+  // 暂时使用简单的Status处理
   const normalizedStatus = project.status === 'error' ? 'failed' : project.status
 
   const getStepName = () => {
     if (normalizedStatus === 'processing' && project.current_step) {
       const stepNames = {
-        1: '内容大纲分析',
-        2: '时间轴生成',
-        3: '片段评分',
-        4: '标题生成',
-        5: '主题聚类',
+        1: '内容Outline分析',
+        2: 'Timeline生成',
+        3: 'ClipScore',
+        4: 'Title Generation',
+        5: 'Topic Clustering',
         6: '视频生成'
       }
-      return stepNames[project.current_step as keyof typeof stepNames] || '处理中'
+      return stepNames[project.current_step as keyof typeof stepNames] || 'Processing'
     }
     return config.text
   }

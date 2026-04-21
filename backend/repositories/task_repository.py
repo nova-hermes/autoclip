@@ -340,7 +340,7 @@ class TaskRepository(BaseRepository[Task]):
             fixed_count = 0
             for task in long_running_tasks:
                 task.status = TaskStatus.FAILED
-                task.error_message = "任务超时，已自动标记为失败"
+                task.error_message = "任务Timeout，已自动标记为失败"
                 task.updated_at = datetime.utcnow()
                 fixed_count += 1
                 logger.info(f"修复长时间运行任务: {task.id}")

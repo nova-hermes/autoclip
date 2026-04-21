@@ -124,7 +124,7 @@ class YouTubeDownloader:
             # 添加重试机制
             'retries': 3,
             'fragment_retries': 3,
-            # 设置超时
+            # 设置Timeout
             'socket_timeout': 30,
             'retries': 3,
         }

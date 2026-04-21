@@ -130,7 +130,7 @@ async def create_bilibili_download_task(request: BilibiliDownloadRequest):
                         logger.warning(f"下载B站缩略图失败: {response.status_code}")
                 except Exception as e:
                     logger.error(f"处理B站缩略图失败: {e}")
-                    # 缩略图处理失败不影响主流程
+                    # 缩略图Processing failed不影响主流程
             
             # 创建项目数据
             project_data = ProjectCreate(
@@ -250,7 +250,7 @@ async def update_project_download_progress(project_id: str, progress: float, mes
                     "download_message": message
                 })
                 
-                # 如果进度达到100%，更新状态为等待处理
+                # 如果进度达到100%，更新状态为Waiting to process
                 if progress >= 100.0:
                     from ...schemas.project import ProjectStatus
                     project.status = ProjectStatus.PENDING
@@ -267,7 +267,7 @@ async def update_project_download_progress(project_id: str, progress: float, mes
 async def process_download_task(task_id: str, request: BilibiliDownloadRequest, project_id: str):
     """处理下载任务"""
     try:
-        # 更新任务状态为处理中
+        # 更新任务状态为Processing
         download_tasks[task_id].status = "processing"
         download_tasks[task_id].progress = 10.0
         
@@ -336,7 +336,7 @@ async def process_download_task(task_id: str, request: BilibiliDownloadRequest, 
             except SpeechRecognitionError as e:
                 logger.error(f"Whisper字幕生成失败: {e}")
                 # Whisper失败时，标记项目为失败状态
-                logger.error("字幕文件不存在且Whisper生成失败，项目将标记为失败状态")
+                logger.error("Subtitle file not found且Whisper生成失败，项目将标记为失败状态")
                 subtitle_path = None  # 确保字幕路径为空，后续会标记项目失败
             except Exception as e:
                 logger.error(f"生成字幕过程中发生未知错误: {e}")
@@ -418,29 +418,29 @@ async def process_download_task(task_id: str, request: BilibiliDownloadRequest, 
             # 检查字幕文件是否存在，如果不存在则标记项目为失败
             srt_file_path = raw_dir / "input.srt"
             if not srt_file_path.exists():
-                logger.error(f"字幕文件不存在: {srt_file_path}，项目将标记为失败状态")
+                logger.error(f"Subtitle file not found: {srt_file_path}，项目将标记为失败状态")
                 from ...schemas.project import ProjectStatus
                 project.status = ProjectStatus.FAILED
                 if not project.processing_config:
                     project.processing_config = {}
-                project.processing_config["error_message"] = "字幕文件不存在且Whisper生成失败"
+                project.processing_config["error_message"] = "Subtitle file not found且Whisper生成失败"
                 db.commit()
                 
                 # 更新任务状态为失败
                 download_tasks[task_id].status = "failed"
-                download_tasks[task_id].error_message = "字幕文件不存在且Whisper生成失败"
+                download_tasks[task_id].error_message = "Subtitle file not found且Whisper生成失败"
                 download_tasks[task_id].progress = 0.0
                 download_tasks[task_id].project_id = str(project.id)
                 download_tasks[task_id].updated_at = datetime.now().isoformat()
                 
                 # 更新项目下载进度为失败
-                await update_project_download_progress(project_id, 0.0, "下载失败：字幕文件不存在")
+                await update_project_download_progress(project_id, 0.0, "下载失败：Subtitle file not found")
                 
-                logger.info(f"B站下载任务失败: {task_id}, 项目ID: {project.id}, 原因: 字幕文件不存在")
+                logger.info(f"B站下载任务失败: {task_id}, 项目ID: {project.id}, 原因: Subtitle file not found")
                 return
             
             # 更新项目下载进度为完成
-            await update_project_download_progress(project_id, 100.0, "下载完成，准备开始处理")
+            await update_project_download_progress(project_id, 100.0, "下载完成，准备Started processing")
             
             # 更新任务状态
             download_tasks[task_id].status = "completed"
@@ -452,7 +452,7 @@ async def process_download_task(task_id: str, request: BilibiliDownloadRequest, 
             
             # 自动启动处理流程
             try:
-                # 更新项目状态为等待处理
+                # 更新项目状态为Waiting to process
                 from ...schemas.project import ProjectStatus
                 project.status = ProjectStatus.PENDING  # 改为PENDING，让自动化服务启动
                 db.commit()

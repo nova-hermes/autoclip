@@ -107,7 +107,7 @@ def health_check(self) -> Dict[str, Any]:
             db.close()
             health_status['checks']['database'] = {'status': 'healthy', 'message': '数据库连接正常'}
         except Exception as e:
-            health_status['checks']['database'] = {'status': 'unhealthy', 'message': f'数据库连接失败: {e}'}
+            health_status['checks']['database'] = {'status': 'unhealthy', 'message': f'数据库Connection failed: {e}'}
             health_status['status'] = 'unhealthy'
         
         # 检查Redis连接
@@ -117,7 +117,7 @@ def health_check(self) -> Dict[str, Any]:
             r.ping()
             health_status['checks']['redis'] = {'status': 'healthy', 'message': 'Redis连接正常'}
         except Exception as e:
-            health_status['checks']['redis'] = {'status': 'unhealthy', 'message': f'Redis连接失败: {e}'}
+            health_status['checks']['redis'] = {'status': 'unhealthy', 'message': f'RedisConnection failed: {e}'}
             health_status['status'] = 'unhealthy'
         
         # 检查磁盘空间
@@ -148,7 +148,7 @@ def health_check(self) -> Dict[str, Any]:
         return health_status
         
     except Exception as e:
-        logger.error(f"系统健康检查失败，错误: {e}")
+        logger.error(f"系统健康Check failed，错误: {e}")
         raise
 
 
@@ -175,7 +175,7 @@ def backup_project_data(self, project_id: str, backup_path: str = None) -> Dict[
             project = project_repo.get_by_id(project_id)
             
             if not project:
-                raise ValueError(f"项目不存在: {project_id}")
+                raise ValueError(f"Project not found: {project_id}")
             
             # 生成备份路径
             if not backup_path:

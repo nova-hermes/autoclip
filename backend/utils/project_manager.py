@@ -102,7 +102,7 @@ class ProjectManager:
             项目元数据
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         metadata_file = self.get_project_paths(project_id)["metadata_dir"] / "project_metadata.json"
         
@@ -173,7 +173,7 @@ class ProjectManager:
             保存后的文件路径
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         if not file_path.exists():
             raise FileIOError(f"源文件不存在: {file_path}")
@@ -219,7 +219,7 @@ class ProjectManager:
             输入文件路径字典
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         project_base = paths["project_base"]
@@ -276,7 +276,7 @@ class ProjectManager:
             result: 处理结果
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         metadata_dir = paths["metadata_dir"]
@@ -314,7 +314,7 @@ class ProjectManager:
             处理结果，如果不存在则返回None
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         metadata_dir = paths["metadata_dir"]
@@ -339,7 +339,7 @@ class ProjectManager:
             clip_index: 切片索引
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         metadata_dir = paths["metadata_dir"]
@@ -395,7 +395,7 @@ class ProjectManager:
             切片列表
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         metadata_dir = paths["metadata_dir"]
@@ -419,7 +419,7 @@ class ProjectManager:
             collection_data: 合集数据
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         metadata_dir = paths["metadata_dir"]
@@ -463,7 +463,7 @@ class ProjectManager:
             合集列表
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         paths = self.get_project_paths(project_id)
         metadata_dir = paths["metadata_dir"]
@@ -514,7 +514,7 @@ class ProjectManager:
             是否删除成功
         """
         if not self.validate_project_exists(project_id):
-            logger.warning(f"项目不存在: {project_id}")
+            logger.warning(f"Project not found: {project_id}")
             return False
         
         paths = self.get_project_paths(project_id)
@@ -525,7 +525,7 @@ class ProjectManager:
             logger.info(f"项目已删除: {project_id}")
             return True
         except Exception as e:
-            logger.error(f"删除项目失败: {e}")
+            logger.error(f"Failed to delete project: {e}")
             return False
     
     def get_project_summary(self, project_id: str) -> Dict[str, Any]:
@@ -539,7 +539,7 @@ class ProjectManager:
             项目摘要
         """
         if not self.validate_project_exists(project_id):
-            raise FileIOError(f"项目不存在: {project_id}")
+            raise FileIOError(f"Project not found: {project_id}")
         
         metadata = self.get_project_metadata(project_id)
         validation = self.validate_input_files(project_id)

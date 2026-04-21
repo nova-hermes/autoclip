@@ -12,7 +12,7 @@ from .base import BaseModel
 class ClipStatus(str, enum.Enum):
     """切片状态枚举"""
     PENDING = "pending"           # 待处理
-    PROCESSING = "processing"     # 处理中
+    PROCESSING = "processing"     # Processing
     COMPLETED = "completed"       # 已完成
     FAILED = "failed"            # 失败
 

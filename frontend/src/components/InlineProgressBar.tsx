@@ -19,12 +19,12 @@ interface ProgressData {
 
 // 流水线步骤配置
 const PIPELINE_STEPS = [
-  { id: 1, name: '大纲提取', description: '从视频转写文本中提取结构性大纲' },
-  { id: 2, name: '时间定位', description: '基于SRT字幕定位话题时间区间' },
-  { id: 3, name: '内容评分', description: '多维度评估片段质量与传播潜力' },
-  { id: 4, name: '标题生成', description: '为高分片段生成吸引人的标题' },
-  { id: 5, name: '主题聚类', description: '将相关片段聚合为合集推荐' },
-  { id: 6, name: '视频切割', description: '使用FFmpeg生成切片与合集视频' }
+  { id: 1, name: 'Outline Extraction', description: '从视频转写文本中提取结构性Outline' },
+  { id: 2, name: 'Timeline Mapping', description: '基于SRTSubtitles定位话题时间区间' },
+  { id: 3, name: 'Content Scoring', description: '多维度评估Clip质量与传播潜力' },
+  { id: 4, name: 'Title Generation', description: '为高分Clip生成吸引人的Title' },
+  { id: 5, name: 'Topic Clustering', description: '将相关Clip聚合为Collection推荐' },
+  { id: 6, name: 'Video Cutting', description: '使用FFmpeg生成Clip与Collection视频' }
 ];
 
 export const InlineProgressBar: React.FC<InlineProgressBarProps> = ({
@@ -59,7 +59,7 @@ export const InlineProgressBar: React.FC<InlineProgressBarProps> = ({
     console.log('InlineProgressBar处理进度更新:', message);
     
     const newProgress = message.progress || 0;
-    const stepName = message.step_name || '处理中...';
+    const stepName = message.step_name || 'Processing...';
     const stepDetails = message.message || '';
     
     // 快照消息检查 - 避免回退
@@ -81,10 +81,10 @@ export const InlineProgressBar: React.FC<InlineProgressBarProps> = ({
     onProgressUpdate?.(newProgress, stepName);
   };
 
-  // 根据步骤ID获取步骤名称
+  // 根据步骤ID获取步骤Name
   const getStepName = (stepId: number): string => {
     const step = PIPELINE_STEPS.find(s => s.id === stepId);
-    return step ? step.name : '处理中...';
+    return step ? step.name : 'Processing...';
   };
 
   // 监听props变化，更新进度数据
@@ -101,11 +101,11 @@ export const InlineProgressBar: React.FC<InlineProgressBarProps> = ({
     }));
   }, [currentStep, totalSteps]);
 
-  // 订阅项目进度更新
+  // 订阅Project进度更新
   useEffect(() => {
-    console.log('InlineProgressBar WebSocket状态:', { isConnected, projectId });
+    console.log('InlineProgressBar WebSocketStatus:', { isConnected, projectId });
     if (isConnected && projectId) {
-      console.log('订阅项目进度:', projectId);
+      console.log('订阅Project进度:', projectId);
       syncSubscriptions([projectId]);
     }
   }, [isConnected, projectId, syncSubscriptions]);
@@ -169,7 +169,7 @@ export const InlineProgressBar: React.FC<InlineProgressBarProps> = ({
         justifyContent: 'space-between',
         gap: '8px'
       }}>
-        {/* 左侧：步骤名称 */}
+        {/* 左侧：步骤Name */}
         <div style={{ 
           display: 'flex',
           alignItems: 'center',

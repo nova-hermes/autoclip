@@ -14,7 +14,7 @@ class TaskStatus(str, enum.Enum):
     RUNNING = "running"           # 运行中
     COMPLETED = "completed"       # 已完成
     FAILED = "failed"            # 失败
-    CANCELLED = "cancelled"      # 已取消
+    CANCELLED = "cancelled"      # Cancelled
 
 class TaskType(str, enum.Enum):
     """任务类型枚举"""

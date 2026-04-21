@@ -155,7 +155,7 @@ async def cancel_task(
         if not success:
             raise HTTPException(status_code=404, detail="任务不存在或无法取消")
         
-        return {"message": "任务已取消"}
+        return {"message": "任务Cancelled"}
         
     except HTTPException:
         raise

@@ -31,7 +31,7 @@ class ProcessingService:
     @with_concurrency_control()
     def start_processing(self, project_id: str, srt_path: Path) -> Dict[str, Any]:
         """
-        开始处理项目
+        Started processing项目
         
         Args:
             project_id: 项目ID
@@ -40,7 +40,7 @@ class ProcessingService:
         Returns:
             处理结果
         """
-        logger.info(f"开始处理项目: {project_id}")
+        logger.info(f"Started processing项目: {project_id}")
         
         # 创建处理上下文
         context = ProcessingContext(project_id, "temp_task_id", self.db)

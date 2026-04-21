@@ -29,7 +29,7 @@ class AccountHealthService:
         self.warning_days = 7  # 提前警告天数
         
     async def check_account_health(self, account_id: int) -> Dict:
-        """检查单个账号健康状态"""
+        """Check single account health"""
         try:
             db = next(get_db())
             account = db.query(BilibiliAccount).filter(BilibiliAccount.id == account_id).first()
@@ -38,7 +38,7 @@ class AccountHealthService:
                 return {
                     "account_id": account_id,
                     "status": AccountHealthStatus.UNKNOWN,
-                    "message": "账号不存在",
+                    "message": "Account not found",
                     "last_check": datetime.now()
                 }
             
@@ -86,7 +86,7 @@ class AccountHealthService:
             return {
                 "account_id": account_id,
                 "status": AccountHealthStatus.UNKNOWN,
-                "message": f"检查失败: {str(e)}",
+                "message": f"Check failed: {str(e)}",
                 "last_check": datetime.now()
             }
     
@@ -159,7 +159,7 @@ class AccountHealthService:
             logger.error(f"检查Cookie有效性失败: {str(e)}")
             return {
                 "status": AccountHealthStatus.UNKNOWN,
-                "message": f"检查失败: {str(e)}",
+                "message": f"Check failed: {str(e)}",
                 "expires_in": None
             }
     
@@ -223,7 +223,7 @@ class AccountHealthService:
             logger.error(f"检查登录状态失败: {str(e)}")
             return {
                 "status": AccountHealthStatus.UNKNOWN,
-                "message": f"检查失败: {str(e)}"
+                "message": f"Check failed: {str(e)}"
             }
     
     async def _check_upload_permission(self, account: BilibiliAccount) -> Dict:
@@ -279,7 +279,7 @@ class AccountHealthService:
             logger.error(f"检查上传权限失败: {str(e)}")
             return {
                 "status": AccountHealthStatus.UNKNOWN,
-                "message": f"检查失败: {str(e)}"
+                "message": f"Check failed: {str(e)}"
             }
     
     def _evaluate_overall_status(self, cookie_status: Dict, login_status: Dict, upload_status: Dict) -> Dict:
@@ -329,7 +329,7 @@ class AccountHealthService:
             return results
             
         except Exception as e:
-            logger.error(f"批量检查账号健康状态失败: {str(e)}")
+            logger.error(f"Batch check account health失败: {str(e)}")
             return []
     
     async def auto_refresh_cookies(self, account_id: int) -> Dict:
@@ -341,7 +341,7 @@ class AccountHealthService:
             if not account:
                 return {
                     "success": False,
-                    "message": "账号不存在"
+                    "message": "Account not found"
                 }
             
             # 这里可以实现自动刷新Cookie的逻辑

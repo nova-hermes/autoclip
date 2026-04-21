@@ -319,7 +319,7 @@ async def delete_account(
         if success:
             return {"message": "账号删除成功"}
         else:
-            raise HTTPException(status_code=404, detail="账号不存在")
+            raise HTTPException(status_code=404, detail="Account not found")
     except HTTPException:
         raise
     except Exception as e:
@@ -403,7 +403,7 @@ async def cancel_upload_task(
     try:
         success = upload_service.cancel_upload_task(record_id)
         if success:
-            return {"message": "投稿任务已取消"}
+            return {"message": "投稿任务Cancelled"}
         else:
             raise HTTPException(status_code=400, detail="取消失败")
     except ValueError as e:

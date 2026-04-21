@@ -155,7 +155,7 @@ class LLMManager:
         for attempt in range(max_retries):
             try:
                 return self.call(prompt, input_data, **kwargs)
-            except ValueError:  # 如果是API Key或参数错误，不重试
+            except ValueError:  # 如果是API Key或Invalid parameters，不重试
                 raise
             except Exception as e:
                 if attempt == max_retries - 1:
@@ -172,7 +172,7 @@ class LLMManager:
             provider = LLMProviderFactory.create_provider(provider_type, api_key, model_name)
             return provider.test_connection()
         except Exception as e:
-            logger.error(f"测试{provider_type.value}连接失败: {e}")
+            logger.error(f"测试{provider_type.value}Connection failed: {e}")
             return False
     
     def get_current_provider_info(self) -> Dict[str, Any]:

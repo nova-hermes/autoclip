@@ -28,7 +28,7 @@ import { useSimpleProgressStore } from '../stores/useSimpleProgressStore'
 const { Title, Text, Paragraph } = Typography
 const { Option } = Select
 
-// 模拟项目数据
+// 模拟Project数据
 const mockProjects = [
   {
     id: 'demo-project-1',
@@ -73,44 +73,44 @@ export const SimpleProgressDemo: React.FC = () => {
   const [pollingInterval, setPollingInterval] = useState(2000)
   const [newProjectId, setNewProjectId] = useState('')
 
-  // 模拟开始处理项目
+  // 模拟Start Processing
   const handleStartProcessing = (projectId: string) => {
     setProjects(prev => prev.map(p => 
       p.id === projectId ? { ...p, status: 'processing' } : p
     ))
-    message.success(`开始处理项目: ${projectId}`)
+    message.success(`Start Processing: ${projectId}`)
   }
 
-  // 模拟查看详情
+  // 模拟查看Details
   const handleViewDetails = (projectId: string) => {
-    message.info(`查看项目详情: ${projectId}`)
+    message.info(`查看Project Details: ${projectId}`)
   }
 
-  // 模拟删除项目
+  // 模拟DeleteProject
   const handleDelete = (projectId: string) => {
     setProjects(prev => prev.filter(p => p.id !== projectId))
-    message.success(`删除项目: ${projectId}`)
+    message.success(`DeleteProject: ${projectId}`)
   }
 
-  // 模拟重试项目
+  // 模拟RetryProject
   const handleRetry = (projectId: string) => {
     setProjects(prev => prev.map(p => 
       p.id === projectId ? { ...p, status: 'processing' } : p
     ))
-    message.success(`重试项目: ${projectId}`)
+    message.success(`RetryProject: ${projectId}`)
   }
 
-  // 添加新项目
+  // 添加新Project
   const handleAddProject = () => {
     if (!newProjectId.trim()) {
-      message.warning('请输入项目ID')
+      message.warning('Please enterProjectID')
       return
     }
 
     const newProject = {
       id: newProjectId,
-      title: `新项目 ${newProjectId}`,
-      description: '这是一个新添加的演示项目',
+      title: `新Project ${newProjectId}`,
+      description: '这是一个新添加的演示Project',
       status: 'pending' as const,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -119,23 +119,23 @@ export const SimpleProgressDemo: React.FC = () => {
 
     setProjects(prev => [...prev, newProject])
     setNewProjectId('')
-    message.success(`添加项目: ${newProjectId}`)
+    message.success(`添加Project: ${newProjectId}`)
   }
 
-  // 开始轮询选中的项目
+  // Start轮询选中的Project
   const handleStartPolling = () => {
     if (selectedProjectIds.length === 0) {
-      message.warning('请选择要轮询的项目')
+      message.warning('Please select要轮询的Project')
       return
     }
     startPolling(selectedProjectIds, pollingInterval)
-    message.success(`开始轮询 ${selectedProjectIds.length} 个项目`)
+    message.success(`Start轮询 ${selectedProjectIds.length} 个Project`)
   }
 
-  // 停止轮询
+  // Stop轮询
   const handleStopPolling = () => {
     stopPolling()
-    message.info('停止轮询')
+    message.info('Stop轮询')
   }
 
   // 清除所有进度
@@ -175,7 +175,7 @@ export const SimpleProgressDemo: React.FC = () => {
               </Select>
             </Col>
             <Col span={8}>
-              <Text strong>轮询状态:</Text>
+              <Text strong>轮询Status:</Text>
               <div style={{ marginTop: '8px' }}>
                 <Tag color={isPolling ? 'green' : 'red'}>
                   {isPolling ? '正在轮询' : '未轮询'}
@@ -186,7 +186,7 @@ export const SimpleProgressDemo: React.FC = () => {
               <Text strong>进度数据:</Text>
               <div style={{ marginTop: '8px' }}>
                 <Tag color="blue">
-                  {Object.keys(allProgress).length} 个项目
+                  {Object.keys(allProgress).length} 个Project
                 </Tag>
               </div>
             </Col>
@@ -201,14 +201,14 @@ export const SimpleProgressDemo: React.FC = () => {
                   onClick={handleStartPolling}
                   disabled={isPolling}
                 >
-                  开始轮询
+                  Start轮询
                 </Button>
                 <Button 
                   icon={<StopOutlined />}
                   onClick={handleStopPolling}
                   disabled={!isPolling}
                 >
-                  停止轮询
+                  Stop轮询
                 </Button>
                 <Button 
                   icon={<ReloadOutlined />}
@@ -221,7 +221,7 @@ export const SimpleProgressDemo: React.FC = () => {
             <Col span={12}>
               <Space>
                 <Input
-                  placeholder="输入新项目ID"
+                  placeholder="输入新ProjectID"
                   value={newProjectId}
                   onChange={(e) => setNewProjectId(e.target.value)}
                   onPressEnter={handleAddProject}
@@ -231,7 +231,7 @@ export const SimpleProgressDemo: React.FC = () => {
                   icon={<PlusOutlined />}
                   onClick={handleAddProject}
                 >
-                  添加项目
+                  添加Project
                 </Button>
               </Space>
             </Col>
@@ -239,11 +239,11 @@ export const SimpleProgressDemo: React.FC = () => {
 
           <Row>
             <Col span={24}>
-              <Text strong>选择要轮询的项目:</Text>
+              <Text strong>选择要轮询的Project:</Text>
               <div style={{ marginTop: '8px' }}>
                 <Select
                   mode="multiple"
-                  placeholder="选择项目"
+                  placeholder="选择Project"
                   value={selectedProjectIds}
                   onChange={setSelectedProjectIds}
                   style={{ width: '100%' }}
@@ -269,14 +269,14 @@ export const SimpleProgressDemo: React.FC = () => {
             pollingInterval={pollingInterval}
             showDetails={true}
             onProgressUpdate={(projectId, progress) => {
-              console.log(`项目 ${projectId} 进度更新:`, progress)
+              console.log(`Project ${projectId} 进度更新:`, progress)
             }}
           />
         </Card>
       )}
 
-      {/* 项目卡片列表 */}
-      <Card title="项目列表">
+      {/* Project卡片列表 */}
+      <Card title="Project列表">
         <Row gutter={[16, 16]}>
           {projects.map(project => (
             <Col span={24} key={project.id}>
