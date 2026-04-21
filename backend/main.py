@@ -10,15 +10,12 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from .core.config import settings, get_logging_config, get_api_key
 
-# Configure logging
-logging_config = get_logging_config()
+# Configure logging (console only — Railway captures stdout)
+log_level = os.environ.get("LOG_LEVEL", "INFO")
 logging.basicConfig(
-    level=getattr(logging, logging_config["level"]),
-    format=logging_config["format"],
-    handlers=[
-        logging.StreamHandler(),  # 输出到控制台
-        logging.FileHandler(logging_config["file"])  # 输出到文件
-    ]
+    level=getattr(logging, log_level, logging.INFO),
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
 )
 
 logger = logging.getLogger(__name__)
