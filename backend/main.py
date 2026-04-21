@@ -1,14 +1,16 @@
-"""FastAPI应用入口点"""
+"""FastAPI application entry point"""
 
 import logging
+import os
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 
-# 导入配置管理
 from .core.config import settings, get_logging_config, get_api_key
 
-# 配置日志
+# Configure logging
 logging_config = get_logging_config()
 logging.basicConfig(
     level=getattr(logging, logging_config["level"]),
@@ -142,8 +144,35 @@ async def get_video_categories():
 # 导入统一错误Processing间件
 from .core.error_middleware import global_exception_handler
 
-# 注册全局异常处理器
+# Register global exception handler
 app.add_exception_handler(Exception, global_exception_handler)
+
+# Serve frontend static files (production)
+FRONTEND_DIR = Path(__file__).parent.parent / "frontend" / "dist"
+if FRONTEND_DIR.exists():
+    # Serve landing page at root
+    @app.get("/")
+    async def serve_landing():
+        landing = FRONTEND_DIR / "landing.html"
+        if landing.exists():
+            return FileResponse(str(landing))
+        return FileResponse(str(FRONTEND_DIR / "index.html"))
+
+    # Serve static assets
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="assets")
+
+    # SPA fallback — serve index.html for all non-API routes
+    @app.get("/{path:path}")
+    async def serve_spa(path: str):
+        # Don't intercept API routes
+        if path.startswith("api/") or path.startswith("docs") or path.startswith("redoc"):
+            return JSONResponse(status_code=404, content={"detail": "Not found"})
+        # Try exact file first
+        file_path = FRONTEND_DIR / path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        # SPA fallback
+        return FileResponse(str(FRONTEND_DIR / "index.html"))
 
 if __name__ == "__main__":
     import uvicorn

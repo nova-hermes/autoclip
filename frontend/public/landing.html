@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoClip — Turn 1 Video Into 10 Viral Clips</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fafafa;
+      --bg-alt: #f0f0f0;
+      --text: #111;
+      --text-secondary: #555;
+      --border: #e0e0e0;
+      --accent: #111;
+      --accent-hover: #333;
+      --card-bg: #fff;
+      --btn-text: #fff;
+      --radius: 10px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0a0a0a;
+      --bg-alt: #141414;
+      --text: #eee;
+      --text-secondary: #999;
+      --border: #222;
+      --accent: #fff;
+      --accent-hover: #ccc;
+      --card-bg: #111;
+      --btn-text: #000;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-weight: 800; font-size: 1.25rem;
+      display: flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .theme-toggle {
+      background: none; border: 1px solid var(--border);
+      border-radius: 50%; width: 36px; height: 36px;
+      cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text); transition: border-color 0.2s;
+    }
+    .theme-toggle:hover { border-color: var(--text-secondary); }
+    .nav-cta {
+      background: var(--accent); color: var(--btn-text);
+      padding: 8px 20px; border-radius: 8px;
+      font-weight: 600; font-size: 0.875rem;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent-hover); }
+
+    /* HERO */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 0.8rem; font-weight: 500;
+      color: var(--text-secondary); margin-bottom: 28px;
+    }
+    .hero-badge span { font-size: 0.7rem; }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800; line-height: 1.12;
+      letter-spacing: -0.03em;
+      max-width: 700px; margin: 0 auto 20px;
+    }
+    .hero p {
+      font-size: 1.15rem; color: var(--text-secondary);
+      max-width: 520px; margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: var(--btn-text);
+      padding: 14px 32px; border-radius: 10px;
+      font-weight: 600; font-size: 1rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--card-bg); color: var(--text);
+      padding: 14px 32px; border-radius: 10px;
+      font-weight: 600; font-size: 1rem;
+      text-decoration: none; border: 1px solid var(--border);
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--text-secondary); }
+
+    .hero-demo {
+      margin-top: 56px; position: relative;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      max-width: 860px; margin-left: auto; margin-right: auto;
+      aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-demo-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      color: var(--text-secondary);
+    }
+    .hero-demo-placeholder svg { opacity: 0.3; }
+
+    /* HOW IT WORKS */
+    .how-it-works { padding: 100px 0; }
+    .section-label {
+      font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-secondary); margin-bottom: 12px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800; text-align: center;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      text-align: center; color: var(--text-secondary);
+      max-width: 500px; margin: 0 auto 60px; font-size: 1rem;
+    }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .step {
+      text-align: center; padding: 36px 24px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--accent); color: var(--btn-text);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; margin-bottom: 20px;
+    }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+    .step p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    /* FEATURES */
+    .features { padding: 100px 0; }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
+    .feature-card {
+      padding: 32px; border-radius: var(--radius);
+      background: var(--card-bg); border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: var(--text-secondary); }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: var(--bg-alt); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 18px;
+    }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; }
+
+    /* PRICING */
+    .pricing { padding: 100px 0; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    }
+    .pricing-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 32px 24px;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .pricing-card.popular {
+      border-color: var(--accent);
+      border-width: 2px;
+    }
+    .popular-badge {
+      position: absolute; top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent); color: var(--btn-text);
+      font-size: 0.7rem; font-weight: 700;
+      padding: 4px 14px; border-radius: 100px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .pricing-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .pricing-card .price {
+      font-size: 2rem; font-weight: 800; margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .pricing-card .price span { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); }
+    .pricing-card .price-note { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 20px; }
+    .pricing-features { list-style: none; flex: 1; margin-bottom: 24px; }
+    .pricing-features li {
+      font-size: 0.85rem; color: var(--text-secondary);
+      padding: 6px 0; display: flex; align-items: center; gap: 8px;
+    }
+    .pricing-features li::before { content: "✓"; font-weight: 700; color: var(--text); }
+    .pricing-btn {
+      display: block; text-align: center;
+      padding: 12px; border-radius: 8px;
+      font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; transition: all 0.2s;
+      border: 1px solid var(--border); color: var(--text);
+      background: transparent;
+    }
+    .pricing-btn:hover { border-color: var(--text); }
+    .pricing-card.popular .pricing-btn {
+      background: var(--accent); color: var(--btn-text);
+      border-color: var(--accent);
+    }
+    .pricing-card.popular .pricing-btn:hover { background: var(--accent-hover); }
+
+    /* FAQ */
+    .faq { padding: 100px 0; }
+    .faq-list { max-width: 680px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-q {
+      width: 100%; background: none; border: none;
+      padding: 22px 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 1rem; font-weight: 600; color: var(--text);
+      text-align: left; font-family: inherit;
+    }
+    .faq-q:hover { color: var(--text-secondary); }
+    .faq-arrow {
+      font-size: 1.2rem; transition: transform 0.25s;
+      flex-shrink: 0; margin-left: 16px;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 22px; }
+
+    /* CTA */
+    .cta-section {
+      padding: 100px 0 120px; text-align: center;
+    }
+    .cta-section h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800; letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+    .cta-section p {
+      color: var(--text-secondary); margin-bottom: 32px;
+      font-size: 1.05rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-inner p { color: var(--text-secondary); font-size: 0.82rem; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      color: var(--text-secondary); font-size: 0.82rem;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .steps { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
+      .nav-links a:not(.nav-cta) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container nav-inner">
+    <a href="/" class="logo">✂️ AutoClip</a>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+      <a href="/signup" class="nav-cta">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">✨ Now open-source — star us on GitHub</div>
+    <h1>Turn 1 Video Into 10 Viral Clips — In Minutes</h1>
+    <p>Paste a YouTube link or upload your video. AutoClip's AI finds the best moments, scores them, and delivers ready-to-post shorts.</p>
+    <div class="hero-buttons">
+      <a href="/signup" class="btn-primary">Start Free →</a>
+      <a href="#how-it-works" class="btn-secondary">See How It Works</a>
+    </div>
+    <div class="hero-demo">
+      <div class="hero-demo-placeholder">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span style="font-size: 0.85rem;">Demo video preview</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">Three Steps to Viral Content</h2>
+    <p class="section-subtitle">No editing skills needed. Let AI do the heavy lifting.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Upload or Paste a Link</h3>
+        <p>Drop your video file or paste a YouTube URL. We support MP4, MOV, and most video formats up to 2 hours.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>AI Analyzes Your Video</h3>
+        <p>Our AI identifies engaging moments, scores virality potential, and generates hook-driven titles for each clip.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Download &amp; Post</h3>
+        <p>Review your clips, pick your favorites, and download in the perfect format for TikTok, Reels, or Shorts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">Everything You Need to Scale</h2>
+    <p class="section-subtitle">Built for creators who want results without the busywork.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>AI Virality Scoring</h3>
+        <p>Every clip gets a 1–100 score based on hook strength, pacing, emotional peaks, and audience retention patterns.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Auto-Generated Titles</h3>
+        <p>Catchy, platform-optimized titles generated for each clip. Edit them or use them as-is.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Multi-Platform Export</h3>
+        <p>One-click export in 9:16, 1:1, or 16:9. Perfectly sized for TikTok, Instagram Reels, and YouTube Shorts.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📂</div>
+        <h3>Clip Collections</h3>
+        <p>Organize clips into collections for different campaigns, clients, or content series. Stay organized at scale.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Priority Processing</h3>
+        <p>Pro and Team plans get dedicated GPU queues. Your 2-hour podcast is clipped in under 5 minutes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>API Access</h3>
+        <p>Integrate AutoClip into your workflow. Automate clipping for your entire content pipeline with our REST API.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">Simple, Transparent Pricing</h2>
+    <p class="section-subtitle">Start free. Upgrade when you're ready. No contracts.</p>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <h3>Free</h3>
+        <div class="price">$0</div>
+        <div class="price-note">forever</div>
+        <ul class="pricing-features">
+          <li>3 clips per month</li>
+          <li>720p export</li>
+          <li>AutoClip watermark</li>
+          <li>Basic AI scoring</li>
+          <li>YouTube link support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn">Get Started</a>
+      </div>
+      <!-- Creator -->
+      <div class="pricing-card">
+        <h3>Creator</h3>
+        <div class="price">$12<span>/mo</span></div>
+        <div class="price-note">billed monthly</div>
+        <ul class="pricing-features">
+          <li>50 clips per month</li>
+          <li>1080p export</li>
+          <li>No watermark</li>
+          <li>Auto-generated titles</li>
+          <li>All export formats</li>
+          <li>Email support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn">Get Started</a>
+      </div>
+      <!-- Pro -->
+      <div class="pricing-card popular">
+        <div class="popular-badge">Most Popular</div>
+        <h3>Pro</h3>
+        <div class="price">$29<span>/mo</span></div>
+        <div class="price-note">billed monthly</div>
+        <ul class="pricing-features">
+          <li>200 clips per month</li>
+          <li>4K export</li>
+          <li>Clip collections</li>
+          <li>Priority processing</li>
+          <li>Advanced AI scoring</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn">Get Started</a>
+      </div>
+      <!-- Team -->
+      <div class="pricing-card">
+        <h3>Team</h3>
+        <div class="price">$79<span>/mo</span></div>
+        <div class="price-note">billed monthly</div>
+        <ul class="pricing-features">
+          <li>5 team members</li>
+          <li>500 clips per month</li>
+          <li>Shared workspace</li>
+          <li>API access</li>
+          <li>Custom integrations</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a href="/signup" class="pricing-btn">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <p class="section-subtitle">Got questions? We've got answers.</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How does the AI decide which clips to extract?
+          <span class="faq-arrow">+</span>
+        </button>
+        <div class="faq-a">Our AI analyzes speech patterns, emotional cues, topic transitions, and audience retention data to identify the most engaging segments. Each clip is scored on virality potential using models trained on millions of viral short-form videos.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What video formats do you support?
+          <span class="faq-arrow">+</span>
+        </button>
+        <div class="faq-a">We support MP4, MOV, MKV, and WebM uploads, plus direct YouTube link imports. Videos can be up to 2 hours long on paid plans and 30 minutes on the free tier.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I customize the clips?
+          <span class="faq-arrow">+</span>
+        </button>
+        <div class="faq-a">Yes. You can adjust start and end times, edit auto-generated titles, change aspect ratios, and choose your export quality before downloading.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is AutoClip open-source?
+          <span class="faq-arrow">+</span>
+        </button>
+        <div class="faq-a">Yes! AutoClip is open-source and self-hostable. The cloud version adds managed infrastructure, GPU processing, and team features on top. Check our GitHub for the source code.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I cancel anytime?
+          <span class="faq-arrow">+</span>
+        </button>
+        <div class="faq-a">Absolutely. All plans are month-to-month with no contracts. Cancel anytime from your account settings. You'll retain access until the end of your billing period.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do you offer refunds?
+          <span class="faq-arrow">+</span>
+        </button>
+        <div class="faq-a">We offer a 7-day money-back guarantee on all paid plans. If AutoClip isn't right for you, contact support within 7 days of your first payment for a full refund.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to Create Viral Content?</h2>
+    <p>Join thousands of creators saving hours every week.</p>
+    <a href="/signup" class="btn-primary">Start Free →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <p>✂️ AutoClip © 2026. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">GitHub</a>
+      <a href="#">Twitter</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Dark mode toggle
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.querySelector('.theme-toggle').textContent = isDark ? '🌙' : '☀️';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+  // Load saved theme
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.theme-toggle').textContent = '☀️';
+    });
+  }
+
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    item.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

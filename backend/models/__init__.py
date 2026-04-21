@@ -8,6 +8,7 @@ from .clip import Clip
 from .collection import Collection
 from .task import Task, TaskStatus, TaskType
 from .bilibili import BilibiliAccount, UploadRecord
+from .user import User, SubscriptionTier, SubscriptionStatus
 
 __all__ = [
     "Base",
@@ -19,5 +20,8 @@ __all__ = [
     "TaskStatus",
     "TaskType",
     "BilibiliAccount",
-    "UploadRecord"
+    "UploadRecord",
+    "User",
+    "SubscriptionTier",
+    "SubscriptionStatus",
 ]

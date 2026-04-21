@@ -5,7 +5,7 @@
 
 import enum
 from typing import Optional
-from sqlalchemy import Column, String, Text, JSON, Enum, Integer, DateTime
+from sqlalchemy import Column, String, Text, JSON, Enum, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import BaseModel
 
@@ -31,8 +31,17 @@ class Project(BaseModel):
     """项目模型"""
     
     __tablename__ = "projects"
-    
-    # 基本信息
+
+    # User ownership
+    user_id = Column(
+        String(36),
+        ForeignKey("users.id"),
+        nullable=True,  # nullable for backward compat
+        index=True,
+        comment="Owner user ID"
+    )
+
+    # Basic info
     name = Column(
         String(255), 
         nullable=False, 
@@ -119,7 +128,12 @@ class Project(BaseModel):
         comment="项目完成时间"
     )
     
-    # 关联关系
+    # Relationships
+    user = relationship(
+        "User",
+        back_populates="projects",
+        foreign_keys=[user_id]
+    )
     clips = relationship(
         "Clip", 
         back_populates="project",
