@@ -14,7 +14,7 @@ export const SimpleTest: React.FC = () => {
 
   useEffect(() => {
     console.log('📤 StartAPI调用测试');
-    fetch('http://localhost:8000/api/v1/tasks/project/64d5768e-7b6b-40d0-9aed-f216768a6526')
+    fetch('/api/v1/tasks/project/64d5768e-7b6b-40d0-9aed-f216768a6526')
       .then(response => response.json())
       .then(data => {
         console.log('📋 API响应:', data);

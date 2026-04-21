@@ -32,7 +32,7 @@ export const RealTimeStatus: React.FC<RealTimeStatusProps> = ({ userId }) => {
     console.log('📤 Start加载Project任务:', projectId);
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/tasks/project/${projectId}`);
+      const response = await fetch(`/api/v1/tasks/project/${projectId}`);
       console.log('📡 API响应Status:', response.status);
       
       if (response.ok) {
