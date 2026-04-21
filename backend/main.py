@@ -2,191 +2,161 @@
 
 import logging
 import os
+import traceback
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 
-from .core.config import settings, get_logging_config, get_api_key
-
-# Configure logging (console only — Railway captures stdout)
+# Configure logging FIRST (console only — Railway captures stdout)
 log_level = os.environ.get("LOG_LEVEL", "INFO")
 logging.basicConfig(
     level=getattr(logging, log_level, logging.INFO),
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler()]
 )
-
 logger = logging.getLogger(__name__)
 
-# 使用统一的API路由注册
-from .api.v1 import api_router
-from .core.database import engine
-from .models.base import Base
-
-# Create FastAPI app
+# Create FastAPI app IMMEDIATELY — health check works even if imports fail
 app = FastAPI(
     title="AutoClip API",
-    description="AI视频切片处理API",
+    description="AI Video Clipping API",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
 
-# Create database tables
-@app.on_event("startup")
-async def startup_event():
-    logger.info("启动AutoClip API服务...")
-    # 导入所有模型以确保表被创建
-    from .models.bilibili import BilibiliAccount, UploadRecord
-    Base.metadata.create_all(bind=engine)
-    logger.info("数据库表创建完成")
-    
-    # 加载API密钥到环境变量
-    api_key = get_api_key()
-    if api_key:
-        import os
-        os.environ["DASHSCOPE_API_KEY"] = api_key
-        logger.info("API密钥已加载到环境变量")
-    else:
-        logger.warning("未找到API密钥配置")
-    
-    # 启动WebSocket网关服务 - 已禁用，使用新的简化进度系统
-    # from .services.websocket_gateway_service import websocket_gateway_service
-    # await websocket_gateway_service.start()
-    # logger.info("WebSocket网关服务已启动")
-    logger.info("WebSocket网关服务已禁用，使用新的简化进度系统")
+# Health check — works regardless of import state
+@app.get("/healthz")
+async def healthz():
+    return {"status": "ok"}
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    """应用关闭事件"""
-    logger.info("正在关闭AutoClip API服务...")
-    # WebSocket网关服务已禁用
-    # from .services.websocket_gateway_service import websocket_gateway_service
-    # await websocket_gateway_service.stop()
-    # logger.info("WebSocket网关服务已停止")
-    logger.info("WebSocket网关服务已禁用")
-
-# Add CORS middleware
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include unified API routes
-app.include_router(api_router, prefix="/api/v1")
+# --- Safe imports with error reporting ---
+_import_errors = []
 
-# 添加独立的video-categories端点
-@app.get("/api/v1/video-categories")
-async def get_video_categories():
-    """获取视频分类配置."""
+# Config
+try:
+    from .core.config import settings, get_api_key
+except Exception as e:
+    logger.error(f"Config import failed: {e}")
+    _import_errors.append(f"config: {e}")
+    settings = None
+
+# Database
+try:
+    from .core.database import engine
+    from .models.base import Base
+except Exception as e:
+    logger.error(f"Database import failed: {e}")
+    _import_errors.append(f"database: {e}")
+    engine = None
+    Base = None
+
+# API routes
+try:
+    from .api.v1 import api_router
+    app.include_router(api_router, prefix="/api/v1")
+    logger.info("API routes registered")
+except Exception as e:
+    logger.error(f"API router import failed: {e}\n{traceback.format_exc()}")
+    _import_errors.append(f"api_router: {e}")
+
+# Error middleware
+try:
+    from .core.error_middleware import global_exception_handler
+    app.add_exception_handler(Exception, global_exception_handler)
+except Exception as e:
+    logger.error(f"Error middleware import failed: {e}")
+    _import_errors.append(f"error_middleware: {e}")
+
+# Startup event
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting AutoClip API...")
+    if _import_errors:
+        logger.warning(f"Import errors (degraded mode): {_import_errors}")
+
+    # Database tables
+    if engine and Base:
+        try:
+            from .models.bilibili import BilibiliAccount, UploadRecord
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables created")
+        except Exception as e:
+            logger.error(f"Database init failed: {e}")
+
+    # Load API key
+    try:
+        if settings:
+            api_key = get_api_key()
+            if api_key:
+                os.environ["DASHSCOPE_API_KEY"] = api_key
+                logger.info("API key loaded")
+    except Exception as e:
+        logger.error(f"API key load failed: {e}")
+
+    logger.info(f"AutoClip started (errors: {len(_import_errors)})")
+
+# Import status endpoint
+@app.get("/api/v1/status")
+async def status():
     return {
-        "categories": [
-            {
-                "value": "default",
-                "name": "默认",
-                "description": "通用视频内容处理",
-                "icon": "🎬",
-                "color": "#4facfe"
-            },
-            {
-                "value": "knowledge",
-                "name": "知识科普",
-                "description": "科学、技术、历史、文化等知识类内容",
-                "icon": "📚",
-                "color": "#52c41a"
-            },
-            {
-                "value": "entertainment",
-                "name": "娱乐",
-                "description": "游戏、音乐、电影等娱乐内容",
-                "icon": "🎮",
-                "color": "#722ed1"
-            },
-            {
-                "value": "business",
-                "name": "商业",
-                "description": "商业、创业、投资等商业内容",
-                "icon": "💼",
-                "color": "#fa8c16"
-            },
-            {
-                "value": "experience",
-                "name": "经验分享",
-                "description": "个人经历、生活感悟等经验内容",
-                "icon": "🌟",
-                "color": "#eb2f96"
-            },
-            {
-                "value": "opinion",
-                "name": "观点评论",
-                "description": "时事评论、观点分析等评论内容",
-                "icon": "💭",
-                "color": "#13c2c2"
-            },
-            {
-                "value": "speech",
-                "name": "演讲",
-                "description": "公开演讲、讲座等演讲内容",
-                "icon": "🎤",
-                "color": "#f5222d"
-            }
-        ]
+        "status": "running",
+        "import_errors": _import_errors,
+        "degraded": len(_import_errors) > 0
     }
-
-# 导入统一错误Processing间件
-from .core.error_middleware import global_exception_handler
-
-# Register global exception handler
-app.add_exception_handler(Exception, global_exception_handler)
 
 # Serve frontend static files (production)
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend" / "dist"
 if FRONTEND_DIR.exists():
-    # Serve landing page at root
-    @app.get("/")
-    async def serve_landing():
-        landing = FRONTEND_DIR / "landing.html"
-        if landing.exists():
-            return FileResponse(str(landing))
-        return FileResponse(str(FRONTEND_DIR / "index.html"))
+    try:
+        # Serve landing page at root
+        @app.get("/")
+        async def serve_landing():
+            landing = FRONTEND_DIR / "landing.html"
+            if landing.exists():
+                return FileResponse(str(landing))
+            return FileResponse(str(FRONTEND_DIR / "index.html"))
 
-    # Serve static assets
-    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="assets")
+        # Serve static assets
+        assets_dir = FRONTEND_DIR / "assets"
+        if assets_dir.exists():
+            app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
-    # SPA fallback — serve index.html for all non-API routes
-    @app.get("/{path:path}")
-    async def serve_spa(path: str):
-        # Don't intercept API routes
-        if path.startswith("api/") or path.startswith("docs") or path.startswith("redoc"):
-            return JSONResponse(status_code=404, content={"detail": "Not found"})
-        # Try exact file first
-        file_path = FRONTEND_DIR / path
-        if file_path.is_file():
-            return FileResponse(str(file_path))
         # SPA fallback
-        return FileResponse(str(FRONTEND_DIR / "index.html"))
+        @app.get("/{path:path}")
+        async def serve_spa(path: str):
+            if path.startswith("api/") or path.startswith("docs") or path.startswith("redoc"):
+                return JSONResponse(status_code=404, content={"detail": "Not found"})
+            file_path = FRONTEND_DIR / path
+            if file_path.is_file():
+                return FileResponse(str(file_path))
+            return FileResponse(str(FRONTEND_DIR / "index.html"))
+
+        logger.info("Frontend static files mounted")
+    except Exception as e:
+        logger.error(f"Frontend mount failed: {e}")
 
 if __name__ == "__main__":
     import uvicorn
     import sys
-    
-    # 默认端口
     port = 8000
-    
-    # 检查命令行参数
     if len(sys.argv) > 1:
         for i, arg in enumerate(sys.argv):
             if arg == "--port" and i + 1 < len(sys.argv):
                 try:
                     port = int(sys.argv[i + 1])
                 except ValueError:
-                    logger.error(f"无效的端口号: {sys.argv[i + 1]}")
                     port = 8000
-    
-    logger.info(f"启动服务器，端口: {port}")
+    logger.info(f"Starting server on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
