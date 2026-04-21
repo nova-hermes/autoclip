@@ -1,17 +1,34 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
 import { Layout } from 'antd'
 import HomePage from './pages/HomePage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
 import SettingsPage from './pages/SettingsPage'
-import SignInPage from './pages/SignInPage'
-import SignUpPage from './pages/SignUpPage'
-import BillingPage from './pages/BillingPage'
 import Header from './components/Header'
 
 const { Content } = Layout
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+// Lazy-load Clerk only when key is present (avoids import errors)
+let ClerkProvider: any = null
+let SignedIn: any = null
+let SignedOut: any = null
+let RedirectToSignIn: any = null
+let SignInPage: any = null
+let SignUpPage: any = null
+let BillingPage: any = null
+
+if (clerkPubKey) {
+  const clerk = await import('@clerk/clerk-react')
+  ClerkProvider = clerk.ClerkProvider
+  SignedIn = clerk.SignedIn
+  SignedOut = clerk.SignedOut
+  RedirectToSignIn = clerk.RedirectToSignIn
+
+  SignInPage = (await import('./pages/SignInPage')).default
+  SignUpPage = (await import('./pages/SignUpPage')).default
+  BillingPage = (await import('./pages/BillingPage')).default
+}
 
 function ProtectedApp() {
   return (
@@ -22,7 +39,7 @@ function ProtectedApp() {
           <Route path="/" element={<HomePage />} />
           <Route path="/project/:id" element={<ProjectDetailPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/billing" element={<BillingPage />} />
+          {BillingPage && <Route path="/billing" element={<BillingPage />} />}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Content>
@@ -31,9 +48,8 @@ function ProtectedApp() {
 }
 
 function App() {
-  // If no Clerk key configured, run in dev mode without auth
-  if (!clerkPubKey) {
-    console.warn('VITE_CLERK_PUBLISHABLE_KEY not set — running without auth')
+  // No Clerk key — run without auth (dev mode)
+  if (!clerkPubKey || !ClerkProvider) {
     return <ProtectedApp />
   }
 
@@ -43,13 +59,6 @@ function App() {
         {/* Public auth routes */}
         <Route path="/sign-in/*" element={<SignInPage />} />
         <Route path="/sign-up/*" element={<SignUpPage />} />
-
-        {/* Billing page — auth required but separate from app */}
-        <Route path="/billing" element={
-          <SignedIn>
-            <BillingPage />
-          </SignedIn>
-        } />
 
         {/* Protected app routes */}
         <Route path="/*" element={

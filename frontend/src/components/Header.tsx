@@ -2,16 +2,38 @@ import React from 'react'
 import { Layout, Button, Dropdown } from 'antd'
 import { SettingOutlined, HomeOutlined, UserOutlined, LogoutOutlined, CreditCardOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useUser, useClerk } from '@clerk/clerk-react'
 
 const { Header: AntHeader } = Layout
+
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+// Lazy load Clerk hooks
+let useUser: any = null
+let useClerk: any = null
+if (clerkPubKey) {
+  const clerk = await import('@clerk/clerk-react')
+  useUser = clerk.useUser
+  useClerk = clerk.useClerk
+}
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const isHomePage = location.pathname === '/'
-  const { user, isSignedIn } = useUser()
-  const { signOut } = useClerk()
+
+  // Only use Clerk hooks if available
+  let user: any = null
+  let isSignedIn = false
+  let signOut: any = () => {}
+
+  if (useUser && useClerk) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const userResult = useUser()
+    user = userResult.user
+    isSignedIn = userResult.isSignedIn
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    signOut = useClerk().signOut
+  }
 
   const userMenu = {
     items: [
@@ -75,7 +97,6 @@ const Header: React.FC = () => {
             fontSize: '24px',
             fontWeight: '700',
             color: '#00d4ff',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             letterSpacing: '-0.5px',
           }}
         >
@@ -115,7 +136,7 @@ const Header: React.FC = () => {
               }}
             />
           </Dropdown>
-        ) : (
+        ) : clerkPubKey ? (
           <Button
             onClick={() => navigate('/sign-in')}
             style={{
@@ -126,7 +147,7 @@ const Header: React.FC = () => {
           >
             Sign In
           </Button>
-        )}
+        ) : null}
       </div>
     </AntHeader>
   )

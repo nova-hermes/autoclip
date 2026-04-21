@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react'
-import { useUser, useClerk } from '@clerk/clerk-react'
-import { Button, Card, Tag, message, Spin } from 'antd'
+import { Button, Card, Tag, message } from 'antd'
 import { CheckOutlined, LogoutOutlined } from '@ant-design/icons'
 import axios from 'axios'
+
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+let useUser: any = null
+let useClerk: any = null
+if (clerkPubKey) {
+  const clerk = await import('@clerk/clerk-react')
+  useUser = clerk.useUser
+  useClerk = clerk.useClerk
+}
 
 interface Plan {
   id: string
@@ -10,8 +19,8 @@ interface Plan {
   price: number
   period: string
   features: string[]
-  priceId: string
   tier: string
+  popular?: boolean
 }
 
 const plans: Plan[] = [
@@ -26,7 +35,6 @@ const plans: Plan[] = [
       'Standard export quality',
       'Community support',
     ],
-    priceId: '',
     tier: 'free',
   },
   {
@@ -41,7 +49,6 @@ const plans: Plan[] = [
       'Priority processing',
       'Email support',
     ],
-    priceId: import.meta.env.VITE_STRIPE_PRICE_CREATOR || '',
     tier: 'creator',
   },
   {
@@ -57,10 +64,9 @@ const plans: Plan[] = [
       'Priority support',
       'API access',
     ],
-    priceId: import.meta.env.VITE_STRIPE_PRICE_PRO || '',
     tier: 'pro',
     popular: true,
-  } as Plan & { popular?: boolean },
+  },
   {
     id: 'team',
     name: 'Team',
@@ -74,14 +80,20 @@ const plans: Plan[] = [
       'SSO integration',
       'Dedicated support',
     ],
-    priceId: import.meta.env.VITE_STRIPE_PRICE_TEAM || '',
     tier: 'team',
   },
 ]
 
 export default function BillingPage() {
-  const { user } = useUser()
-  const { signOut } = useClerk()
+  let user: any = null
+  let signOut: any = () => {}
+
+  if (useUser && useClerk) {
+    const userResult = useUser()
+    user = userResult.user
+    signOut = useClerk().signOut
+  }
+
   const [loading, setLoading] = useState<string | null>(null)
   const [subscription, setSubscription] = useState<any>(null)
   const [statusLoading, setStatusLoading] = useState(true)
@@ -98,8 +110,8 @@ export default function BillingPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
       setSubscription(data)
-    } catch (err) {
-      // No subscription yet — that's fine
+    } catch {
+      // No subscription yet
     } finally {
       setStatusLoading(false)
     }
@@ -150,7 +162,6 @@ export default function BillingPage() {
       padding: '40px 20px',
       color: '#fff',
     }}>
-      {/* Header */}
       <div style={{
         maxWidth: 1200,
         margin: '0 auto 40px',
@@ -173,7 +184,6 @@ export default function BillingPage() {
         </Button>
       </div>
 
-      {/* Current subscription */}
       {!statusLoading && subscription?.subscription_tier !== 'free' && (
         <div style={{
           maxWidth: 600,
@@ -191,18 +201,12 @@ export default function BillingPage() {
             {subscription?.subscription_status}
           </Tag>
           <br />
-          <Button
-            type="link"
-            onClick={handleManageBilling}
-            loading={loading === 'manage'}
-            style={{ marginTop: 12 }}
-          >
+          <Button type="link" onClick={handleManageBilling} loading={loading === 'manage'} style={{ marginTop: 12 }}>
             Manage Billing
           </Button>
         </div>
       )}
 
-      {/* Plans */}
       <div style={{
         maxWidth: 1200,
         margin: '0 auto',
@@ -215,34 +219,21 @@ export default function BillingPage() {
             key={plan.id}
             style={{
               background: '#1a1a1a',
-              border: (plan as any).popular ? '2px solid #00d4ff' : '1px solid #333',
+              border: plan.popular ? '2px solid #00d4ff' : '1px solid #333',
               borderRadius: 12,
               position: 'relative',
             }}
             styles={{ body: { padding: 24 } }}
           >
-            {(plan as any).popular && (
-              <Tag
-                color="#00d4ff"
-                style={{
-                  position: 'absolute',
-                  top: -12,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  fontWeight: 600,
-                }}
-              >
+            {plan.popular && (
+              <Tag color="#00d4ff" style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', fontWeight: 600 }}>
                 Most Popular
               </Tag>
             )}
             <h3 style={{ fontSize: 20, margin: '0 0 8px', color: '#fff' }}>{plan.name}</h3>
             <div style={{ marginBottom: 20 }}>
-              <span style={{ fontSize: 36, fontWeight: 700, color: '#fff' }}>
-                ${plan.price}
-              </span>
-              {plan.price > 0 && (
-                <span style={{ color: '#888' }}>/{plan.period}</span>
-              )}
+              <span style={{ fontSize: 36, fontWeight: 700, color: '#fff' }}>${plan.price}</span>
+              {plan.price > 0 && <span style={{ color: '#888' }}>/{plan.period}</span>}
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px' }}>
               {plan.features.map((f, i) => (
@@ -253,16 +244,12 @@ export default function BillingPage() {
               ))}
             </ul>
             <Button
-              type={(plan as any).popular ? 'primary' : 'default'}
+              type={plan.popular ? 'primary' : 'default'}
               block
               size="large"
               loading={loading === plan.tier}
               onClick={() => handleCheckout(plan.tier)}
-              style={
-                (plan as any).popular
-                  ? { background: '#00d4ff', borderColor: '#00d4ff', fontWeight: 600 }
-                  : { borderColor: '#444', color: '#fff' }
-              }
+              style={plan.popular ? { background: '#00d4ff', borderColor: '#00d4ff', fontWeight: 600 } : { borderColor: '#444', color: '#fff' }}
             >
               {plan.price === 0 ? 'Current Plan' : `Get ${plan.name}`}
             </Button>
@@ -270,13 +257,8 @@ export default function BillingPage() {
         ))}
       </div>
 
-      {/* Back to app */}
       <div style={{ textAlign: 'center', marginTop: 40 }}>
-        <Button
-          type="link"
-          onClick={() => window.location.href = '/'}
-          style={{ color: '#00d4ff' }}
-        >
+        <Button type="link" onClick={() => window.location.href = '/'} style={{ color: '#00d4ff' }}>
           Skip for now — go to app
         </Button>
       </div>
