@@ -3,6 +3,7 @@ YouTube相关API路由
 处理YouTube视频解析和下载功能
 """
 
+import os
 import logging
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Form, UploadFile, File
@@ -103,8 +104,14 @@ async def parse_youtube_video(
         }
         
     except Exception as e:
-        logger.error(f"解析YouTube视频失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"解析失败: {str(e)}")
+        import traceback
+        error_details = traceback.format_exc()
+        logger.error(f"解析YouTube视频失败: {str(e)}\n{error_details}")
+        # Return detailed error in development, generic in production
+        detail = f"解析失败: {str(e)}"
+        if os.getenv("ENVIRONMENT", "development") == "development":
+            detail = f"解析失败: {str(e)}\nTraceback: {error_details}"
+        raise HTTPException(status_code=500, detail=detail)
 
 @router.post("/download")
 async def create_youtube_download_task(request: YouTubeDownloadRequest):
